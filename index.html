@@ -34,11 +34,12 @@
                 if (!file) {
                     msg = "No files selected";
                     submitBtn.disabled = true;
-                } else if (file.type !== "text/plain" || !file.name.endsWith(".txt")) {
+                } 
+                else if (file.type !== "text/plain" || !file.name.endsWith(".txt")) {
                     msg = "Invalid file type";
                     submitBtn.disabled = true;
-                } else {
-                    msg = "File ready to upload";
+                } 
+                else {
                     submitBtn.disabled = false;
                 }
 
@@ -50,7 +51,8 @@
                 if (!file || file.type !== "text/plain" || !file.name.endsWith(".txt")) {
                     event.preventDefault();
                     alert("Please select a valid .txt file before submitting.");
-                } else {
+                } 
+                else {
                     const msg = "File uploaded successfully";
                     document.getElementById("msg").textContent = msg;
                 }
