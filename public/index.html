@@ -2,13 +2,12 @@
 <html>
   <head>
     <title>SpeccyPlays Endless Sky save file viewer</title>
-    <link rel="icon" type="image/x-icon" href="./images/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="styles.css" />
-    <!-- <script src="./javascript.js"></script> -->
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="/CSS/styles.css" />
   </head>
   <body>
     <div class="uploadsection">
-      <form name="uploadForm" id="uploadForm" onsubmit="handleSubmit(event)">
+      <form name="uploadForm" id="uploadForm" action="./uploads/" method="POST" enctype="multipart/form-data">
         <label for="file">File</label>
         <input id="file" name="file" type="file" accept=".txt"/>
         <input type="submit" value="upload file" id="uploadbtn" disabled/>
@@ -25,9 +24,9 @@
             const uploadedFile = document.getElementById("file");
             const submitBtn = document.getElementById("uploadbtn");
 
-            uploadedFile.addEventListener("change", handleFile);
+            uploadedFile.addEventListener("change", verifyFile);
 
-            function handleFile() {
+            function verifyFile() {
                 let msg = "";
                 const file = this.files[0];
 
@@ -44,18 +43,6 @@
                 }
 
                 document.getElementById("msg").textContent = msg;
-            }
-
-            window.handleSubmit = function(event) {
-                const file = uploadedFile.files[0];
-                if (!file || file.type !== "text/plain" || !file.name.endsWith(".txt")) {
-                    event.preventDefault();
-                    alert("Please select a valid .txt file before submitting.");
-                } 
-                else {
-                    const msg = "File uploaded successfully";
-                    document.getElementById("msg").textContent = msg;
-                }
             }
         });
     </script>
