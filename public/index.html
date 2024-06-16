@@ -13,7 +13,8 @@
             <input type="button" value="Upload File" id="uploadbtn" disabled/>
         </form>
     </div>
-    <div id="result"></div>
+    <div id="result">
+    </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const uploadedFile = document.getElementById("file");
@@ -74,8 +75,10 @@
             }
 
             function formatFileData(data) {
-                console.log(data)
-                return data; // Modify this as per your formatting requirements
+               //data = JSON.stringify(data)
+                console.log(data);
+
+                return data;
             }
         });
     </script>
