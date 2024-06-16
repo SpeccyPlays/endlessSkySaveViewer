@@ -1,9 +1,5 @@
 
-async function readFile(filePath){
-    return await formatData(filePath);
-}
-
-async function formatData (filePath) {
+function formatData (filePath, res) {
 
         let response = {
             success : false,
@@ -16,12 +12,12 @@ async function formatData (filePath) {
             if (err) {
                 response.errors.push(err);
                 console.log('Error reading file:', err);
-                return response;
+                return res.json({response});
             }
             response.data = data;
             response.success = true;
             console.log(filePath, ' Read successfully');
-            return response;
+            return res.json({response});
         });
     }
-module.exports = {readFile};
+module.exports = {formatData};

@@ -15,10 +15,8 @@ app.get('/', function(req, res){
 
 // Set up a route for file uploads
 app.post('/uploads', upload.single('file'), (req, res) => {
-    let formattedData = data.readFile(req.file.path);
-    //console.log(formattedData.data);
-  // Handle the uploaded file
-  res.json({ formattedData });
+      let formattedData = data.formatData(req.file.path, res);
+  
 });
 
 app.listen(port, () => {
