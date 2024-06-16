@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>SpeccyPlays Endless Sky save file viewer</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="/CSS/styles.css" />
-  </head>
-  <body>
+</head>
+<body>
     <div class="uploadsection">
-      <form name="uploadForm" id="uploadForm" action="./uploads/" method="POST" enctype="multipart/form-data">
-        <label for="file">File</label>
-        <input id="file" name="file" type="file" accept=".txt"/>
-        <input type="submit" value="upload file" id="uploadbtn" disabled/>
-      </form>
+        <form name="uploadForm" id="uploadForm" enctype="multipart/form-data">
+            <label for="file">File</label>
+            <input id="file" name="file" type="file" accept=".txt"/>
+            <input type="button" value="Upload File" id="uploadbtn" disabled/>
+        </form>
     </div>
+    <div id="result"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const uploadedFile = document.getElementById("file");
             const submitBtn = document.getElementById("uploadbtn");
+            const resultDiv = document.getElementById("result");
 
             uploadedFile.addEventListener("change", verifyFile);
+            submitBtn.addEventListener("click", uploadFile);
 
             function verifyFile() {
                 let msg = "";
@@ -39,7 +42,43 @@
 
                 console.log(msg);
             }
+
+            function uploadFile() {
+                const formData = new FormData(document.getElementById('uploadForm'));
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response.success) {
+                        displayFileData(data.response.data);
+                    } else {
+                        displayErrors(data.response.errors);
+                    }
+                })
+                .catch(error => {
+                    resultDiv.textContent = 'Error: ' + error.message;
+                });
+            }
+
+            function displayFileData(data) {
+                // Example of further formatting the file data
+                const formattedData = formatFileData(data);
+                resultDiv.textContent = 'File Data: ' + formattedData;
+            }
+
+            function displayErrors(errors) {
+                resultDiv.textContent = 'Errors: ' + errors.join(', ');
+            }
+
+            function formatFileData(data) {
+                // Implement your specific formatting logic here
+                // For example, you can parse the data and display it as needed
+                return data; // Modify this as per your formatting requirements
+            }
         });
     </script>
-  </body>
+</body>
 </html>

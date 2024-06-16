@@ -1,22 +1,36 @@
 const express = require('express');
-const fs = require('node:fs');
+const path = require('path');
+const multer = require('multer');
+const { formatData } = require('./formatFileData');
+
 const app = express();
 const port = 3000;
 
-app.use(express.static(__dirname + '/public'));
-// Require the upload middleware
-const upload = require('./handleUpload');
-//file reader
-const data = require('./formatFileData');
+// Set up storage for multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + 'index.html');
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Set up a route for file uploads
-app.post('/uploads', upload.single('file'), (req, res) => {
-      let formattedData = data.formatData(req.file.path, res);
-  
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (req.file) {
+    const filePath = req.file.path;
+    formatData(filePath, res);
+  } else {
+    res.status(400).json({ response: { success: false, errors: ['No file uploaded'] } });
+  }
 });
 
 app.listen(port, () => {
