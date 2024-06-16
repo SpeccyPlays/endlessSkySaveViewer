@@ -67,7 +67,16 @@
             function displayFileData(data) {
                 // Example of further formatting the file data
                 const formattedData = formatFileData(data);
-                resultDiv.textContent = 'File Data: ' + formattedData;
+                const keys = Object.keys(formattedData);
+                keys.forEach ( (element) => {
+                    const newDiv = document.createElement('button');
+                    //newDiv.innerHTML(element.toString());
+                    newDiv.setAttribute('class', 'tablinks');
+                    newDiv.innerHTML = element.toString();
+                    resultDiv.appendChild(newDiv);
+                })
+                console.log(keys);
+                //resultDiv.textContent = 'File Data: ' + formattedData;
             }
 
             function displayErrors(errors) {
@@ -75,10 +84,8 @@
             }
 
             function formatFileData(data) {
-               //data = JSON.stringify(data)
-                console.log(data);
 
-                return JSON.stringify(data);
+                return data;
             }
         });
     </script>
