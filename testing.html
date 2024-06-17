@@ -27,54 +27,51 @@
             var file = e.target.files[0];
             if (!file) return;
             var reader = new FileReader();
+
+            let output = {
+                pilot : "",
+                missions : [],
+                conditions : [],
+                visited : [],
+                ships : []
+            }
             reader.onload = function(e) {
                 let target = document.getElementById('result');
                 const data = e.target.result.split('\n');
-                //const lines = data.split('\n').toString();
-                let root = new Node("Top level", 0);
-                
+                //used to help with nesting
+                let topLevelLine = "";
                 for (line in data){
-                    const newDiv = document.createElement('ul');
-                    newDiv.innerHTML = data[line];
-                    target.appendChild(newDiv);
-                    let higherNode = root;
-                    const count = numberOfTabs(data[line]) + 1;
-                    let temp = new Node(data[line], count);
-                    let cont = true;
-                    let previousNode = null;
-                    while (cont){
-                        if (higherNode.children.length == 0){
-                            temp.parent = higherNode;
-                            //higherNode.children = [];
-                            higherNode.children.push(temp);
-                            console.log("no children");
-                            previousNode = temp;
-                            break;
-                        }
-                        if (higherNode.indentLevel == temp.indentLevel){
-                            temp.parent = higherNode.parent;
-                            higherNode.children.push(temp);
-                            console.log("Matched level");
-                            previousNode = temp;
-                            break;
-                        }
-                        else {
-                            for (let i = 0 ; i < higherNode.children.length; i++){
-                                if (higherNode.children[i].indentLevel == temp.indentLevel){
-                                    temp.parent = higherNode.children[i].parent;
-                                    higherNode.children[i].parent.children.push(temp);
-                                    console.log("found right level in child");
-                                    cont = false;
-                                    previousNode = temp;
-                                    break;
-                                }
-                                else {
-                                    higherNode = higherNode.children[i];
-                                }
-                            }
-                        }
+
+                    const text = data[line];
+                    const numOfTabs = numberOfTabs(text);
+                    const newLine = text.slice(0, text.indexOf(' ')).toLowerCase();
+                    if (numOfTabs == 0){
+                        topLevelLine = text;
                     }
-                    
+                    if (newLine.includes("pilot") && numOfTabs == 0){
+                        output.pilot = text;
+                        //topLevelLine = text
+                    }
+                    if (newLine.includes("mission") && numOfTabs == 0){
+                        //topLevelLine = text
+                        output.missions.push(text);
+                    }
+                    if (newLine.includes("conditions")){
+                        //seems pointless but stops extra value being added
+                    }
+                    else if (topLevelLine.includes("conditions")){
+                        output.conditions.push(text);
+                    }
+                    if (newLine.includes("visited") && numOfTabs == 0){
+                        output.visited.push(text);
+                    }
+                    if (newLine.includes("ship") && numOfTabs == 0){
+                        output.ships.push(text);
+                    }
+                    else if (topLevelLine.includes("ship")){
+                        output.ships.push(text);
+                    }
+
                     //let element = "li";
                     //if (!data[line].startsWith('\t')) {
                     //    element = "ul"};
@@ -83,7 +80,7 @@
                     //target.appendChild(newDiv);
                     
                 }
-                console.log(root);
+                console.log(output);
             }
             
             reader.readAsText(file)
