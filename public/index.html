@@ -74,8 +74,10 @@
                     newDiv.setAttribute('class', 'tablinks');
                     newDiv.innerHTML = element.toString();
                     resultDiv.appendChild(newDiv);
+                    if (element.isArray()){
+                        
+                    }
                 })
-                console.log(keys);
                 //resultDiv.textContent = 'File Data: ' + formattedData;
             }
 
@@ -84,7 +86,7 @@
             }
 
             function formatFileData(data) {
-
+                console.log(data);
                 return data;
             }
         });
