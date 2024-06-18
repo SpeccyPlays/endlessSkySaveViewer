@@ -12,14 +12,6 @@
     <ul id="result"></ul>
     </div>
     <script>
-        class Node {
-            constructor(value, tabCount){
-                this.value = value;
-                this.parent = null;
-                this.indentLevel = tabCount;
-                this.children = [];
-            }
-        }
         function openFile() {
             document.getElementById('inp').click();
         }
@@ -29,19 +21,17 @@
             var reader = new FileReader();
 
             let output = {
-                pilot : "",
-                missions : [],
-                conditions : [],
-                visited : [],
+                conditions : {},
                 ships : []
             }
             reader.onload = function(e) {
+                console.log("file loaded");
                 let target = document.getElementById('result');
                 const data = e.target.result.split('\n');
                 //used to help with nesting
                 let topLevelLine = "";
                 for (line in data){
-
+                    //a lot of repeated code but slight differences between some of the values
                     const text = data[line];
                     const numOfTabs = numberOfTabs(text);
                     const newLine = text.slice(0, text.indexOf(' ')).toLowerCase();
@@ -49,21 +39,44 @@
                         topLevelLine = text;
                     }
                     if (newLine.includes("pilot") && numOfTabs == 0){
-                        output.pilot = text;
-                        //topLevelLine = text
+                        const tidiedText = text.trim().replace(/"/g, '')
+                        const key = tidiedText.slice(0, tidiedText.indexOf(' '));
+                        const value = tidiedText.slice(tidiedText.indexOf(' ') + 1).trim();
+                        if (!output[key]){
+                            output[key] = [];
+                        }
+                        output[key].push(value);
                     }
                     if (newLine.includes("mission") && numOfTabs == 0){
-                        //topLevelLine = text
-                        output.missions.push(text);
+                        const tidiedText = text.trim().replace(/"/g, '')
+                        const key = tidiedText.slice(0, tidiedText.indexOf(' '));
+                        const value = tidiedText.slice(tidiedText.indexOf(' ') + 1).trim();
+                        if (!output[key]){
+                            output[key] = [];
+                        }
+                        output[key].push(value);
                     }
                     if (newLine.includes("conditions")){
                         //seems pointless but stops extra value being added
                     }
                     else if (topLevelLine.includes("conditions")){
-                        output.conditions.push(text);
+                        //groups the different missions a bit better
+                        const tidiedText = text.trim().replace(/"/g, '')
+                        const key = tidiedText.slice(0, tidiedText.indexOf(':'));
+                        const value = tidiedText.slice(tidiedText.indexOf(':') + 1).trim();
+                        if (!output.conditions[key]){
+                            output.conditions[key] = [] 
+                        }
+                        output.conditions[key].push(value);
                     }
                     if (newLine.includes("visited") && numOfTabs == 0){
-                        output.visited.push(text);
+                        const tidiedText = text.trim().replace(/"/g, '')
+                        const key = tidiedText.slice(0, tidiedText.indexOf(' '));
+                        const value = tidiedText.slice(tidiedText.indexOf(' ') + 1).trim();
+                        if (!output[key]){
+                            output[key] = [];
+                        }
+                        output[key].push(value);
                     }
                     if (newLine.includes("ship") && numOfTabs == 0){
                         output.ships.push(text);
@@ -71,18 +84,37 @@
                     else if (topLevelLine.includes("ship")){
                         output.ships.push(text);
                     }
-
-                    //let element = "li";
-                    //if (!data[line].startsWith('\t')) {
-                    //    element = "ul"};
-                    //const newDiv = document.createElement(element);
-                    //newDiv.innerHTML = data[line];
-                    //target.appendChild(newDiv);
-                    
                 }
-                console.log(output);
+
+                //The output is all key:array apart from confitions which has another level of keys before the array
+                const resultDiv = document.getElementById("result");
+                const keys = Object.keys(output);
+                const specialText = 'conditions'
+                keys.forEach ( (key) => {
+                    if (key != specialText){
+                        const newDiv = document.createElement('button');
+                        //newDiv.innerHTML(element.toString());
+                        newDiv.setAttribute('class', 'tablinks');
+                        newDiv.innerHTML = key.toString();
+                        if (Array.isArray(output[key])){
+                            output[key].forEach( (item) => {
+                                //create tab content
+                            })
+                        }
+                        resultDiv.appendChild(newDiv);
+                    }
+                    else {
+                        const conditionKeys = Object.keys(output[specialText]);
+                        console.log(conditionKeys);
+                        conditionKeys.forEach( (item) => {
+                            const newDiv = document.createElement('button');
+                            newDiv.setAttribute('class', 'tablinks');
+                            newDiv.innerHTML = item.toString();
+                            resultDiv.appendChild(newDiv);
+                        })
+                    }
+                })
             }
-            
             reader.readAsText(file)
         }
         function numberOfTabs(text) {
