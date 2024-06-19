@@ -106,6 +106,7 @@
         const keys = Object.keys(output);
         const specialText = "";
         keys.forEach((key) => {
+            //create the buttons
           const keyDiv = document.createElement("button");
           keyDiv.setAttribute("class", "tablinks");
           keyDiv.setAttribute("name", key);
@@ -114,9 +115,12 @@
           };
           keyDiv.innerHTML = key.toString();
           tabsDiv.appendChild(keyDiv);
+          //create the content divs
           const keyContentDiv = document.createElement("div");
           keyContentDiv.setAttribute("id", key);
           keyContentDiv.setAttribute("class", "tabcontent");
+          //hide by default or they all show - can be handled in CSS later
+          keyContentDiv.style.display = "none";
           contentDiv.appendChild(keyContentDiv);
           if (Array.isArray(output[key])) {
             try {
