@@ -14,10 +14,8 @@
       onchange="readFile(event)"
     />
     <div id="filecontents">
-      <div id="tabs">
-        <div id="content"></div>
-      </div>
-      
+      <div id="tabs"></div>
+      <div id="content"></div>
     </div>
     <script>
       function openFile() {
@@ -103,49 +101,51 @@
           Section to set up the html
           The output is all key:array apart from confitions which has another level of keys before the array
           */
-        const resultDiv = document.getElementById("tabs");
+        const tabsDiv = document.getElementById("tabs");
+        const contentDiv = document.getElementById("content");
         const keys = Object.keys(output);
         const specialText = "";
         keys.forEach((key) => {
-          if (key != specialText) {
-            const keyDiv = document.createElement("button");
-            keyDiv.setAttribute("class", "tablinks");
-            keyDiv.onclick = function (e) {
-              openTab(event, key);
-            };
-            keyDiv.innerHTML = key.toString();
-            resultDiv.appendChild(keyDiv);
-            if (Array.isArray(output[key])) {
-              try {
-                output[key].forEach((item) => {
-                  //create tab content
-                  setSubContent(item, keyDiv, resultDiv);
-                });
-              } catch (e) {
-                console.log("There was an error :", e);
-              }
-            } else if (checkIfObject(output[key])) {
-              try {
-                const conditionKeys = Object.keys(output[key]);
-                conditionKeys.forEach((item) => {
-                  const newDiv = document.createElement("button");
-                  newDiv.setAttribute("class", "tablinks");
-                  newDiv.innerHTML = item.toString();
-                  resultDiv.appendChild(keyDiv);
-                });
-              } catch (e) {
-                console.log("There was an error :", e);
-              }
+          const keyDiv = document.createElement("button");
+          keyDiv.setAttribute("class", "tablinks");
+          keyDiv.setAttribute("name", key);
+          keyDiv.onclick = function (e) {
+            openTab(e, e.target.name);
+          };
+          keyDiv.innerHTML = key.toString();
+          tabsDiv.appendChild(keyDiv);
+          const keyContentDiv = document.createElement("div");
+          keyContentDiv.setAttribute("id", key);
+          keyContentDiv.setAttribute("class", "tabcontent");
+          contentDiv.appendChild(keyContentDiv);
+          if (Array.isArray(output[key])) {
+            try {
+              output[key].forEach((item) => {
+                //create tab content
+                setSubContent(item, keyDiv, keyContentDiv);
+              });
+            } catch (e) {
+              console.log("There was an error :", e);
+            }
+          } else if (checkIfObject(output[key])) {
+            try {
+              const conditionKeys = Object.keys(output[key]);
+              conditionKeys.forEach((item) => {
+                /*const newDiv = document.createElement("button");
+                newDiv.setAttribute("class", "tablinks");
+                newDiv.innerHTML = item.toString();
+                contentDiv.appendChild(keyContentDiv);*/
+              });
+            } catch (e) {
+              console.log("There was an error :", e);
             }
           }
         });
       }
-      function setSubContent(item, keyDiv, resultDiv) {
+      function setSubContent(item, keyDiv, contentDiv) {
         const newDiv = document.createElement("p");
-        newDiv.setAttribute("class", "tabcontent");
-        newDiv.setAttribute("id", keyDiv);
         newDiv.innerHTML = item.toString();
-        resultDiv.appendChild(keyDiv);
+        contentDiv.appendChild(newDiv);
       }
       function numberOfTabs(text) {
         return text.match(/^\s*/)[0].length;
@@ -154,7 +154,7 @@
         return typeof obj === "object" && obj !== null;
       }
       function openTab(evt, tabName) {
-        console.log("Click registered");
+        console.log("Click registered ", tabName);
         // Declare all variables
         var i, tabcontent, tablinks;
 
@@ -172,6 +172,7 @@
 
         // Show the current tab, and add an "active" class to the button that opened the tab
         //document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
       }
     </script>
