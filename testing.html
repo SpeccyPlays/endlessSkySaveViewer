@@ -131,10 +131,7 @@
             try {
               const conditionKeys = Object.keys(output[key]);
               conditionKeys.forEach((item) => {
-                /*const newDiv = document.createElement("button");
-                newDiv.setAttribute("class", "tablinks");
-                newDiv.innerHTML = item.toString();
-                contentDiv.appendChild(keyContentDiv);*/
+                setSubContent(item, keyDiv, keyContentDiv);
               });
             } catch (e) {
               console.log("There was an error :", e);
