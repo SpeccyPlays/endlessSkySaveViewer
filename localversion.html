@@ -6,14 +6,17 @@
     <link rel="stylesheet" type="text/css" href="/public/CSS/styles.css" />
   </head>
   <body>
-    <button onclick="openFile()">Open a file</button>
-    <input
-      id="inp"
-      type="file"
-      style="visibility: hidden"
-      onchange="readFile(event)"
-    />
+    <div class="header">
+      <button onclick="openFile()">Open a file</button>
+      <input
+        id="inp"
+        type="file"
+        style="visibility: hidden"
+        onchange="readFile(event)"
+      />
+    </div>
     <div id="filecontents">
+      <div id="pilotname"></div>
       <div id="tabs"></div>
       <div id="content"></div>
     </div>
@@ -73,11 +76,13 @@
             if (!output[key]) {
               output[key] = {};
             }
-          }
-          else if (topLevelLine.includes("reputation")) {
+          } else if (topLevelLine.includes("reputation")) {
             const tidiedText = text.trim().replace(/"/g, "");
-            const key = tidiedText.slice(0, tidiedText.lastIndexOf(" "))
-            const value = tidiedText.slice(tidiedText.lastIndexOf(" ") + 1, tidiedText.length);
+            const key = tidiedText.slice(0, tidiedText.lastIndexOf(" "));
+            const value = tidiedText.slice(
+              tidiedText.lastIndexOf(" ") + 1,
+              tidiedText.length
+            );
             if (!output.reputation[key]) {
               output.reputation[key] = [];
             }
@@ -85,8 +90,8 @@
           }
           if (newLine.includes("conditions")) {
             //seems pointless but stops extra value being added
-            if (!output.conditions){
-              output.conditions = {}
+            if (!output.conditions) {
+              output.conditions = {};
             }
           } else if (topLevelLine.includes("conditions")) {
             //groups the different missions a bit better
@@ -127,10 +132,17 @@
           */
         const tabsDiv = document.getElementById("tabs");
         const contentDiv = document.getElementById("content");
+        //add pilot as heading and remove from ouput so doesn't get added as a tab
+        if (output.pilot && output.pilot.length > 0){
+          const pilotDiv = document.getElementById("pilotname");
+          const heading = document.createElement("h3");
+          heading.innerText = "Pilot: " + output.pilot[0];
+          pilotDiv.appendChild(heading);
+          delete(output.pilot);
+        }
         const keys = Object.keys(output);
-        const specialText = "";
         keys.forEach((key) => {
-            //create the buttons
+          //create the buttons
           const keyDiv = document.createElement("button");
           keyDiv.setAttribute("class", "tablinks");
           keyDiv.setAttribute("name", key);

@@ -1,0 +1,41 @@
+body {
+    display : flex;
+    flex-direction: column;
+    border-style: solid;
+    height: 95vh;
+    margin: 0;
+    padding: 10px;
+    background-color: black;
+    color: gray;
+}
+.header {
+    border-style: solid;
+}
+button {
+    background-color: black;
+    color: gray;
+    border-color: grey;
+}
+#filecontent {
+    height: 95vh;
+}
+#tabs {
+    flex : 1;
+    flex-direction: row;
+}
+.tablinks {
+    flex : 1;
+}
+.tabcontent {
+    overflow-y: scroll;
+    height: 80vh;
+    border-color: grey;
+}
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: #FF0000;
+}
