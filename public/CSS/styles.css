@@ -17,10 +17,9 @@ button {
     border-color: grey;
 }
 #filecontent {
-    height: 95vh;
+    height: 80vh;
 }
 #tabs {
-    flex : 1;
     flex-direction: row;
 }
 .tablinks {
@@ -28,14 +27,15 @@ button {
 }
 .tabcontent {
     overflow-y: scroll;
-    height: 80vh;
+    height: 75vh;
     border-color: grey;
 }
 ::-webkit-scrollbar {
-    width: 0;  /* Remove scrollbar space */
+    width: 5px;
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
 /* Optional: show position indicator in red */
 ::-webkit-scrollbar-thumb {
-    background: #FF0000;
+    border-radius: 10px;
+    background: grey;
 }
