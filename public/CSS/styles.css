@@ -26,6 +26,7 @@ button {
     flex : 1;
 }
 .tabcontent {
+    display: none;
     overflow-y: scroll;
     height: 75vh;
     border-color: grey;

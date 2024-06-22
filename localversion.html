@@ -151,12 +151,12 @@
           };
           keyDiv.innerHTML = key.toString();
           tabsDiv.appendChild(keyDiv);
-          //create the content divs
-          const keyContentDiv = document.createElement("div");
+          //create the content table
+          const keyContentDiv = document.createElement("table");
           keyContentDiv.setAttribute("id", key);
           keyContentDiv.setAttribute("class", "tabcontent");
-          //hide by default or they all show - can be handled in CSS later
-          keyContentDiv.style.display = "none";
+          //add headings
+          addTableHeadings(keyContentDiv, key);
           contentDiv.appendChild(keyContentDiv);
           if (Array.isArray(output[key])) {
             try {
@@ -180,7 +180,7 @@
         });
       }
       function setSubContent(item, keyDiv, contentDiv) {
-        const newDiv = document.createElement("p");
+        const newDiv = document.createElement("tr");
         newDiv.innerHTML = item.toString();
         contentDiv.appendChild(newDiv);
       }
@@ -221,6 +221,17 @@
             element.removeChild(element.firstChild);
           }
         });
+      }
+      function addTableHeadings(keyContentDiv, key){
+        //create headings for content tables
+        const headings = ["title", "value", "offered", "done", "failed", "aborted"];
+        headings.forEach( heading => {
+          const heading1 = document.createElement("th");
+          heading1.setAttribute("name", key + heading);
+          heading1.innerHTML = heading;
+          keyContentDiv.appendChild(heading1);
+        })
+
       }
     </script>
   </body>
