@@ -171,7 +171,9 @@
             try {
               const conditionKeys = Object.keys(output[key]);
               conditionKeys.forEach((item) => {
-                setSubContent(item, keyDiv, keyContentDiv);
+                if (Array.isArray(output[key][item])) {
+                  setSubContent(item, keyDiv, keyContentDiv);
+                }
               });
             } catch (e) {
               console.log("There was an error :", e);
@@ -222,16 +224,23 @@
           }
         });
       }
-      function addTableHeadings(keyContentDiv, key){
+      function addTableHeadings(keyContentDiv, key) {
         //create headings for content tables
         const header = document.createElement("thead");
-        const headings = ["title", "value", "offered", "done", "failed", "aborted"];
-        headings.forEach( heading => {
+        const headings = [
+          "title",
+          "value",
+          "offered",
+          "done",
+          "failed",
+          "aborted",
+        ];
+        headings.forEach((heading) => {
           const heading1 = document.createElement("th");
           heading1.setAttribute("name", key + heading);
           heading1.innerHTML = heading;
           header.appendChild(heading1);
-        })
+        });
         keyContentDiv.appendChild(header);
       }
     </script>

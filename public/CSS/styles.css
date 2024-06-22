@@ -21,18 +21,23 @@ button {
 }
 #tabs {
     flex-direction: row;
+    width: 80vh;
 }
 .tablinks {
-    flex : 1;
+    flex: 0, 0, 100%;
 }
 .tabcontent {
+    flex: 1;
     display: none;
     overflow-y: scroll;
     height: 75vh;
     border-color: grey;
+    flex: 0, 0, 100%;
 }
 thead th {
+    text-align: left;
     top: 0px;
+    flex: 1;
     position: sticky;
     background-color: black;
     z-index: 1;
