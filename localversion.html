@@ -96,8 +96,8 @@
           } else if (topLevelLine.includes("conditions")) {
             //groups the different missions a bit better
             const tidiedText = text.trim().replace(/"/g, "");
-            const key = tidiedText.slice(0, tidiedText.indexOf(":"));
-            const value = tidiedText.slice(tidiedText.indexOf(":") + 1).trim();
+            const key = tidiedText.slice(0, tidiedText.lastIndexOf(":"));
+            const value = tidiedText.slice(tidiedText.lastIndexOf(":") + 1).trim();
             if (!output.conditions[key]) {
               output.conditions[key] = [];
             }
@@ -162,7 +162,7 @@
             try {
               output[key].forEach((item) => {
                 //create tab content
-                setSubContent(item, keyDiv, keyContentDiv);
+                setSubContent(item, keyDiv, keyContentDiv, output);
               });
             } catch (e) {
               console.log("There was an error :", e);
@@ -172,7 +172,7 @@
               const conditionKeys = Object.keys(output[key]);
               conditionKeys.forEach((item) => {
                 if (Array.isArray(output[key][item])) {
-                  setSubContent(item, keyDiv, keyContentDiv);
+                  setSubContent(item, keyDiv, keyContentDiv, output[key]);
                 }
               });
             } catch (e) {
@@ -181,7 +181,8 @@
           }
         });
       }
-      function setSubContent(item, keyDiv, contentDiv) {
+      function setSubContent(item, keyDiv, contentDiv, output) {
+        console.log(output[item]);
         const newDiv = document.createElement("tr");
         newDiv.innerHTML = item.toString();
         contentDiv.appendChild(newDiv);
@@ -227,14 +228,7 @@
       function addTableHeadings(keyContentDiv, key) {
         //create headings for content tables
         const header = document.createElement("thead");
-        const headings = [
-          "title",
-          "value",
-          "offered",
-          "done",
-          "failed",
-          "aborted",
-        ];
+        const headings =returnTableHeadings();
         headings.forEach((heading) => {
           const heading1 = document.createElement("th");
           heading1.setAttribute("name", key + heading);
@@ -242,6 +236,19 @@
           header.appendChild(heading1);
         });
         keyContentDiv.appendChild(header);
+      }
+      function returnTableHeadings(){
+        //these are used in a couple of places so putting in one function for ease of editing
+        const headings = [
+          "title",
+          "value",
+          "offered",
+          "done",
+          "failed",
+          "aborted",
+          "declined"
+        ];
+        return headings;
       }
     </script>
   </body>
