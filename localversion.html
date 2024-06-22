@@ -31,8 +31,8 @@
 
         reader.onload = function (e) {
           console.log("file loaded");
+          removedChildren();
           const data = e.target.result.split("\n");
-          //used to help with nesting
           const output = formatData(data);
           displayData(output);
         };
@@ -133,12 +133,12 @@
         const tabsDiv = document.getElementById("tabs");
         const contentDiv = document.getElementById("content");
         //add pilot as heading and remove from ouput so doesn't get added as a tab
-        if (output.pilot && output.pilot.length > 0){
+        if (output.pilot && output.pilot.length > 0) {
           const pilotDiv = document.getElementById("pilotname");
           const heading = document.createElement("h3");
           heading.innerText = "Pilot: " + output.pilot[0];
           pilotDiv.appendChild(heading);
-          delete(output.pilot);
+          delete output.pilot;
         }
         const keys = Object.keys(output);
         keys.forEach((key) => {
@@ -208,9 +208,19 @@
         }
 
         // Show the current tab, and add an "active" class to the button that opened the tab
-        //document.getElementById(tabName).style.display = "block";
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
+      }
+      function removedChildren() {
+        //remove children of high level divs
+        //to remove duplication if another file is opened
+        const highLevelDivs = ["pilotname", "tabs", "content"];
+        highLevelDivs.forEach((divName) => {
+          const element = document.getElementById(divName);
+          while (element.firstChild) {
+            element.removeChild(element.firstChild);
+          }
+        });
       }
     </script>
   </body>
