@@ -224,14 +224,15 @@
       }
       function addTableHeadings(keyContentDiv, key){
         //create headings for content tables
+        const header = document.createElement("thead");
         const headings = ["title", "value", "offered", "done", "failed", "aborted"];
         headings.forEach( heading => {
           const heading1 = document.createElement("th");
           heading1.setAttribute("name", key + heading);
           heading1.innerHTML = heading;
-          keyContentDiv.appendChild(heading1);
+          header.appendChild(heading1);
         })
-
+        keyContentDiv.appendChild(header);
       }
     </script>
   </body>

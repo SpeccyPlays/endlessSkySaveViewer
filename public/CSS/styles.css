@@ -31,6 +31,13 @@ button {
     height: 75vh;
     border-color: grey;
 }
+thead th {
+    top: 0px;
+    position: sticky;
+    background-color: black;
+    z-index: 1;
+    padding-top: 0px;
+}
 ::-webkit-scrollbar {
     width: 5px;
     background: transparent;  /* Optional: just make scrollbar invisible */
