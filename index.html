@@ -41,7 +41,7 @@
       function formatData(data) {
         let output = {
           conditions: {},
-          event : []
+          event: [],
         };
         let topLevelLine = "";
         for (line in data) {
@@ -101,14 +101,16 @@
             let value = "";
             //Some conditions are events so account for this
             //this is really messy but works
-            if (tidiedText.slice(0, tidiedText.indexOf(":")).includes("event")) {
+            if (
+              tidiedText.slice(0, tidiedText.indexOf(":")).includes("event")
+            ) {
               key = tidiedText.slice(0, tidiedText.indexOf(":"));
               value = tidiedText.slice(tidiedText.indexOf(":") + 1).trim();
             } else {
               key = tidiedText.slice(0, tidiedText.lastIndexOf(":"));
               value = tidiedText.slice(tidiedText.lastIndexOf(":") + 1).trim();
             }
-            
+
             if (key.includes("event")) {
               output.event.push(value);
             } else if (!output.conditions[key]) {
@@ -197,20 +199,84 @@
         });
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
-        
         const row = contentDiv.insertRow(0);
         const headings = returnTableHeadings();
         let cells = [];
         //go backwards to create in correct order
-        for (let i = headings.length; i >= 0; i--){
+        for (let i = headings.length - 1; i >= 0; i--) {
           cells[i] = row.insertCell(0);
+          //default to a cross and change if positive later
+          cells[i].innerHTML = "✗";
         }
         cells[0].innerHTML = item.toString();
-        if (output[item] != undefined && Array.isArray(output[item])){
+        cells[1].innerHTML = "";
+        if (output[item] != undefined && Array.isArray(output[item])) {
           //check all values in array to see if any only contain numbers
-          //this for the reputation
-          if (output[item].match(/^[0-9]+$/) != null)
-          console.log(output[item]);
+          //this for the reputation - should only be one value
+          output[item].forEach(arrayItem => {
+            if (arrayItem.match(/^-?\d+(\.\d+)?$/) != null) {
+              cells[1].innerHTML = arrayItem.toString();
+              
+            } /*else {
+              cells[1].innerHTML = " ";
+            }*/
+            //I can't think how to do this programtically so it's gonna be manual
+            //there's a big assumption that the array will only contain one of each option
+            if (arrayItem.includes("offered")) {
+              cells[2].innerHTML = "✓";
+            }
+            console.log(arrayItem, arrayItem.includes("done"));
+            if (arrayItem.includes("done")) {
+              console.log
+              //if there's a number add that to the value
+              const hasNumber = arrayItem.match(/\d+/);
+              let value = "";
+              if (hasNumber) {
+                value = hasNumber[0].toString();
+              }
+              cells[3].innerHTML = value + "✓";
+            }
+            if (arrayItem.includes("done")) {
+              console.log
+              //if there's a number add that to the value
+              const hasNumber = arrayItem.match(/\d+/);
+              let value = "";
+              if (hasNumber) {
+                value = hasNumber[0].toString();
+              }
+              cells[3].innerHTML = value + "✓";
+            }
+            if (arrayItem.includes("failed")) {
+              console.log
+              //if there's a number add that to the value
+              const hasNumber = arrayItem.match(/\d+/);
+              let value = "";
+              if (hasNumber) {
+                value = hasNumber[0].toString();
+              }
+              cells[4].innerHTML = value + "✓";
+            }
+            if (arrayItem.includes("aborted")) {
+              console.log
+              //if there's a number add that to the value
+              const hasNumber = arrayItem.match(/\d+/);
+              let value = "";
+              if (hasNumber) {
+                value = hasNumber[0].toString();
+              }
+              cells[5].innerHTML = value + "✓";
+            }
+            if (arrayItem.includes("declined")) {
+              console.log
+              //if there's a number add that to the value
+              const hasNumber = arrayItem.match(/\d+/);
+              let value = "";
+              if (hasNumber) {
+                value = hasNumber[0].toString();
+              }
+              cells[6].innerHTML = value + "✓";
+            }
+          });
         }
       }
       function numberOfTabs(text) {
