@@ -11,6 +11,7 @@
       <input
         id="inp"
         type="file"
+        accept=".txt"
         style="visibility: hidden"
         onchange="readFile(event)"
       />
@@ -27,6 +28,10 @@
       function readFile(e) {
         var file = e.target.files[0];
         if (!file) return;
+        if (file.type !== "text/plain") {
+          alert("Please upload a valid .txt file.");
+          return;
+        }
         var reader = new FileReader();
 
         reader.onload = function (e) {
@@ -128,13 +133,11 @@
             if (!output[key]) {
               output[key] = {};
             }
-            
-          }
-          else if (topLevelLine.includes("tribute")){
+          } else if (topLevelLine.includes("tribute")) {
             const tidiedText = text.trim().replace(/"/g, "");
             const key = tidiedText.slice(0, tidiedText.indexOf(" "));
             const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
-            if (!output.tribute[key]){
+            if (!output.tribute[key]) {
               output.tribute[key] = [];
             }
             output.tribute[key].push(value);
@@ -148,7 +151,7 @@
             }
             output[key].push(value);
           }
-          
+
           /*
           commenting out ship as I think the game makes ship data easily viewable
           if (newLine.includes("ship") && numOfTabs == 0) {
@@ -240,14 +243,14 @@
         };
         if (output[item] != undefined && Array.isArray(output[item])) {
           //check all values in array to see if any only contain numbers
-          //this for the reputation - should only be one value
+          //this for the reputation & tribute - should only be one value
           output[item].forEach((arrayItem) => {
             // Check if the item is a number
             if (arrayItem.match(/^-?\d+(\.\d+)?$/) != null) {
               cells[1].innerHTML = arrayItem.toString();
             }
 
-            // Loop through the status keywords to handle each case programmatically - 
+            // Loop through the status keywords to handle each case programmatically -
             //yeah chat gpt did this bit as it was way too manual before
             for (const [keyword, index] of Object.entries(statusKeywords)) {
               if (arrayItem.includes(keyword)) {
