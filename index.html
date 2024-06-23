@@ -198,6 +198,8 @@
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
         const newDiv = document.createElement("tr");
+        //this will be confusing.
+        console.log(item);
         newDiv.innerHTML = item.toString();
         contentDiv.appendChild(newDiv);
       }
