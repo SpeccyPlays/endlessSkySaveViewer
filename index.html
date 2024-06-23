@@ -41,6 +41,7 @@
       function formatData(data) {
         let output = {
           conditions: {},
+          event : []
         };
         let topLevelLine = "";
         for (line in data) {
@@ -96,12 +97,26 @@
           } else if (topLevelLine.includes("conditions")) {
             //groups the different missions a bit better
             const tidiedText = text.trim().replace(/"/g, "");
-            const key = tidiedText.slice(0, tidiedText.lastIndexOf(":"));
-            const value = tidiedText.slice(tidiedText.lastIndexOf(":") + 1).trim();
-            if (!output.conditions[key]) {
-              output.conditions[key] = [];
+            let key = "";
+            let value = "";
+            //Some conditions are events so account for this
+            //this is really messy but works
+            if (tidiedText.slice(0, tidiedText.indexOf(":")).includes("event")) {
+              key = tidiedText.slice(0, tidiedText.indexOf(":"));
+              value = tidiedText.slice(tidiedText.indexOf(":") + 1).trim();
+            } else {
+              key = tidiedText.slice(0, tidiedText.lastIndexOf(":"));
+              value = tidiedText.slice(tidiedText.lastIndexOf(":") + 1).trim();
             }
-            output.conditions[key].push(value);
+            
+            if (key.includes("event")) {
+              output.event.push(value);
+            } else if (!output.conditions[key]) {
+              output.conditions[key] = [];
+              output.conditions[key].push(value);
+            } else {
+              output.conditions[key].push(value);
+            }
           }
           if (newLine.includes("visited") && numOfTabs == 0) {
             const tidiedText = text.trim().replace(/"/g, "");
@@ -182,7 +197,6 @@
         });
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
-        console.log(output[item]);
         const newDiv = document.createElement("tr");
         newDiv.innerHTML = item.toString();
         contentDiv.appendChild(newDiv);
@@ -228,7 +242,7 @@
       function addTableHeadings(keyContentDiv, key) {
         //create headings for content tables
         const header = document.createElement("thead");
-        const headings =returnTableHeadings();
+        const headings = returnTableHeadings();
         headings.forEach((heading) => {
           const heading1 = document.createElement("th");
           heading1.setAttribute("name", key + heading);
@@ -237,7 +251,7 @@
         });
         keyContentDiv.appendChild(header);
       }
-      function returnTableHeadings(){
+      function returnTableHeadings() {
         //these are used in a couple of places so putting in one function for ease of editing
         const headings = [
           "title",
@@ -246,7 +260,7 @@
           "done",
           "failed",
           "aborted",
-          "declined"
+          "declined",
         ];
         return headings;
       }
