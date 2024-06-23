@@ -210,71 +210,34 @@
         }
         cells[0].innerHTML = item.toString();
         cells[1].innerHTML = "";
+        const statusKeywords = {
+          offered: 2,
+          done: 3,
+          failed: 4,
+          aborted: 5,
+          declined: 6,
+        };
         if (output[item] != undefined && Array.isArray(output[item])) {
           //check all values in array to see if any only contain numbers
           //this for the reputation - should only be one value
-          output[item].forEach(arrayItem => {
+          output[item].forEach((arrayItem) => {
+            // Check if the item is a number
             if (arrayItem.match(/^-?\d+(\.\d+)?$/) != null) {
               cells[1].innerHTML = arrayItem.toString();
-              
-            } /*else {
-              cells[1].innerHTML = " ";
-            }*/
-            //I can't think how to do this programtically so it's gonna be manual
-            //there's a big assumption that the array will only contain one of each option
-            if (arrayItem.includes("offered")) {
-              cells[2].innerHTML = "✓";
             }
-            console.log(arrayItem, arrayItem.includes("done"));
-            if (arrayItem.includes("done")) {
-              console.log
-              //if there's a number add that to the value
-              const hasNumber = arrayItem.match(/\d+/);
-              let value = "";
-              if (hasNumber) {
-                value = hasNumber[0].toString();
+
+            // Loop through the status keywords to handle each case programmatically - 
+            //yeah chat gpt did this bit as it was way too manual before
+            for (const [keyword, index] of Object.entries(statusKeywords)) {
+              if (arrayItem.includes(keyword)) {
+                const hasNumber = arrayItem.match(/\d+/);
+                let value = "";
+                if (hasNumber) {
+                  value = hasNumber[0].toString();
+                }
+                cells[index].innerHTML = value + "✓";
+                break; // Exit the loop after the first match
               }
-              cells[3].innerHTML = value + "✓";
-            }
-            if (arrayItem.includes("done")) {
-              console.log
-              //if there's a number add that to the value
-              const hasNumber = arrayItem.match(/\d+/);
-              let value = "";
-              if (hasNumber) {
-                value = hasNumber[0].toString();
-              }
-              cells[3].innerHTML = value + "✓";
-            }
-            if (arrayItem.includes("failed")) {
-              console.log
-              //if there's a number add that to the value
-              const hasNumber = arrayItem.match(/\d+/);
-              let value = "";
-              if (hasNumber) {
-                value = hasNumber[0].toString();
-              }
-              cells[4].innerHTML = value + "✓";
-            }
-            if (arrayItem.includes("aborted")) {
-              console.log
-              //if there's a number add that to the value
-              const hasNumber = arrayItem.match(/\d+/);
-              let value = "";
-              if (hasNumber) {
-                value = hasNumber[0].toString();
-              }
-              cells[5].innerHTML = value + "✓";
-            }
-            if (arrayItem.includes("declined")) {
-              console.log
-              //if there's a number add that to the value
-              const hasNumber = arrayItem.match(/\d+/);
-              let value = "";
-              if (hasNumber) {
-                value = hasNumber[0].toString();
-              }
-              cells[6].innerHTML = value + "✓";
             }
           });
         }
