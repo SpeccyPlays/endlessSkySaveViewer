@@ -197,11 +197,21 @@
         });
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
-        const newDiv = document.createElement("tr");
-        //this will be confusing.
-        console.log(item);
-        newDiv.innerHTML = item.toString();
-        contentDiv.appendChild(newDiv);
+        
+        const row = contentDiv.insertRow(0);
+        const headings = returnTableHeadings();
+        let cells = [];
+        //go backwards to create in correct order
+        for (let i = headings.length; i >= 0; i--){
+          cells[i] = row.insertCell(0);
+        }
+        cells[0].innerHTML = item.toString();
+        if (output[item] != undefined && Array.isArray(output[item])){
+          //check all values in array to see if any only contain numbers
+          //this for the reputation
+          if (output[item].match(/^[0-9]+$/) != null)
+          console.log(output[item]);
+        }
       }
       function numberOfTabs(text) {
         return text.match(/^\s*/)[0].length;
@@ -243,7 +253,7 @@
       }
       function addTableHeadings(keyContentDiv, key) {
         //create headings for content tables
-        const header = document.createElement("thead");
+        const header = keyContentDiv.createTHead();
         const headings = returnTableHeadings();
         headings.forEach((heading) => {
           const heading1 = document.createElement("th");
