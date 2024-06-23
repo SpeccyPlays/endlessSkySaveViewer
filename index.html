@@ -11,6 +11,7 @@
       <input
         id="inp"
         type="file"
+        accept=".txt"
         style="visibility: hidden"
         onchange="readFile(event)"
       />
@@ -27,6 +28,10 @@
       function readFile(e) {
         var file = e.target.files[0];
         if (!file) return;
+        if (file.type !== "text/plain") {
+          alert("Please upload a valid .txt file.");
+          return;
+        }
         var reader = new FileReader();
 
         reader.onload = function (e) {
@@ -61,15 +66,16 @@
             }
             output[key].push(value);
           }
-          if (newLine.includes("mission") && numOfTabs == 0) {
+          //Not including mission as I think it's the current live missions
+          /*if (newLine.includes("mission") && numOfTabs == 0) {
             const tidiedText = text.trim().replace(/"/g, "");
             const key = tidiedText.slice(0, tidiedText.indexOf(" "));
-            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            const value = tidiedText.slice(tidiedText.indexOf("\"") + 1).trim();
             if (!output[key]) {
               output[key] = [];
             }
             output[key].push(value);
-          }
+          }*/
           if (newLine.includes("reputation") && numOfTabs == 0) {
             const tidiedText = text.trim().replace(/"/g, "");
             const key = tidiedText.slice(0, tidiedText.indexOf(" "));
@@ -89,7 +95,7 @@
             }
             output.reputation[key].push(value);
           }
-          if (newLine.includes("conditions")) {
+          if (newLine.includes("conditions") && numOfTabs == 0) {
             //seems pointless but stops extra value being added
             if (!output.conditions) {
               output.conditions = {};
@@ -120,6 +126,22 @@
               output.conditions[key].push(value);
             }
           }
+          if (newLine.includes("tribute") && numOfTabs == 0) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output[key]) {
+              output[key] = {};
+            }
+          } else if (topLevelLine.includes("tribute")) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output.tribute[key]) {
+              output.tribute[key] = [];
+            }
+            output.tribute[key].push(value);
+          }
           if (newLine.includes("visited") && numOfTabs == 0) {
             const tidiedText = text.trim().replace(/"/g, "");
             const key = tidiedText.slice(0, tidiedText.indexOf(" "));
@@ -129,6 +151,7 @@
             }
             output[key].push(value);
           }
+
           /*
           commenting out ship as I think the game makes ship data easily viewable
           if (newLine.includes("ship") && numOfTabs == 0) {
@@ -140,6 +163,7 @@
             output.ships.push(text);
           }*/
         }
+        console.log(output);
         return output;
       }
       function displayData(output) {
@@ -219,14 +243,14 @@
         };
         if (output[item] != undefined && Array.isArray(output[item])) {
           //check all values in array to see if any only contain numbers
-          //this for the reputation - should only be one value
+          //this for the reputation & tribute - should only be one value
           output[item].forEach((arrayItem) => {
             // Check if the item is a number
             if (arrayItem.match(/^-?\d+(\.\d+)?$/) != null) {
               cells[1].innerHTML = arrayItem.toString();
             }
 
-            // Loop through the status keywords to handle each case programmatically - 
+            // Loop through the status keywords to handle each case programmatically -
             //yeah chat gpt did this bit as it was way too manual before
             for (const [keyword, index] of Object.entries(statusKeywords)) {
               if (arrayItem.includes(keyword)) {
