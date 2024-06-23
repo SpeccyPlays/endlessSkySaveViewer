@@ -41,7 +41,7 @@
       function formatData(data) {
         let output = {
           conditions: {},
-          event : []
+          event: [],
         };
         let topLevelLine = "";
         for (line in data) {
@@ -101,14 +101,16 @@
             let value = "";
             //Some conditions are events so account for this
             //this is really messy but works
-            if (tidiedText.slice(0, tidiedText.indexOf(":")).includes("event")) {
+            if (
+              tidiedText.slice(0, tidiedText.indexOf(":")).includes("event")
+            ) {
               key = tidiedText.slice(0, tidiedText.indexOf(":"));
               value = tidiedText.slice(tidiedText.indexOf(":") + 1).trim();
             } else {
               key = tidiedText.slice(0, tidiedText.lastIndexOf(":"));
               value = tidiedText.slice(tidiedText.lastIndexOf(":") + 1).trim();
             }
-            
+
             if (key.includes("event")) {
               output.event.push(value);
             } else if (!output.conditions[key]) {
@@ -197,9 +199,48 @@
         });
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
-        const newDiv = document.createElement("tr");
-        newDiv.innerHTML = item.toString();
-        contentDiv.appendChild(newDiv);
+        const row = contentDiv.insertRow(0);
+        const headings = returnTableHeadings();
+        let cells = [];
+        //go backwards to create in correct order
+        for (let i = headings.length - 1; i >= 0; i--) {
+          cells[i] = row.insertCell(0);
+          //default to a cross and change if positive later
+          cells[i].innerHTML = "";
+        }
+        cells[0].innerHTML = item.toString();
+        cells[1].innerHTML = "";
+        const statusKeywords = {
+          offered: 2,
+          done: 3,
+          failed: 4,
+          aborted: 5,
+          declined: 6,
+        };
+        if (output[item] != undefined && Array.isArray(output[item])) {
+          //check all values in array to see if any only contain numbers
+          //this for the reputation - should only be one value
+          output[item].forEach((arrayItem) => {
+            // Check if the item is a number
+            if (arrayItem.match(/^-?\d+(\.\d+)?$/) != null) {
+              cells[1].innerHTML = arrayItem.toString();
+            }
+
+            // Loop through the status keywords to handle each case programmatically - 
+            //yeah chat gpt did this bit as it was way too manual before
+            for (const [keyword, index] of Object.entries(statusKeywords)) {
+              if (arrayItem.includes(keyword)) {
+                const hasNumber = arrayItem.match(/\d+/);
+                let value = "";
+                if (hasNumber) {
+                  value = hasNumber[0].toString();
+                }
+                cells[index].innerHTML = value + "✓";
+                break; // Exit the loop after the first match
+              }
+            }
+          });
+        }
       }
       function numberOfTabs(text) {
         return text.match(/^\s*/)[0].length;
@@ -241,7 +282,7 @@
       }
       function addTableHeadings(keyContentDiv, key) {
         //create headings for content tables
-        const header = document.createElement("thead");
+        const header = keyContentDiv.createTHead();
         const headings = returnTableHeadings();
         headings.forEach((heading) => {
           const heading1 = document.createElement("th");
