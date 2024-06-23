@@ -120,6 +120,24 @@
               output.conditions[key].push(value);
             }
           }
+          if (newLine.includes("tribute") && numOfTabs == 0) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output[key]) {
+              output[key] = {};
+            }
+            
+          }
+          else if (topLevelLine.includes("tribute")){
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output.tribute[key]){
+              output.tribute[key] = [];
+            }
+            output.tribute[key].push(value);
+          }
           if (newLine.includes("visited") && numOfTabs == 0) {
             const tidiedText = text.trim().replace(/"/g, "");
             const key = tidiedText.slice(0, tidiedText.indexOf(" "));
@@ -129,6 +147,7 @@
             }
             output[key].push(value);
           }
+          
           /*
           commenting out ship as I think the game makes ship data easily viewable
           if (newLine.includes("ship") && numOfTabs == 0) {
@@ -140,6 +159,7 @@
             output.ships.push(text);
           }*/
         }
+        console.log(output);
         return output;
       }
       function displayData(output) {
