@@ -30,11 +30,13 @@ button {
     display: none;
     overflow-y: scroll;
     height: 80vh;
-    /*border-color: grey;*/
+    border-color: grey;
     flex: 0, 0, 100%;
+    
 }
 table {
     border-collapse: collapse;
+    
 }
 .cellalignleft {
     text-align: left;
@@ -47,11 +49,11 @@ thead th {
     flex: 1;
     position: sticky;
     background-color: black;
-}
-th {
+    z-index: 1;
     
 }
 td {
+    border-collapse: collapse;
     box-sizing: border-box;
     padding-left: 10px;
     text-align: center;
