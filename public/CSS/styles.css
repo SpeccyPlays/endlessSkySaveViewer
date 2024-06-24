@@ -13,7 +13,7 @@ body {
 }
 button {
     background-color: black;
-    color: gray;
+    color: grey;
     border-color: grey;
 }
 #filecontent {
@@ -34,14 +34,26 @@ button {
     border-color: grey;
     flex: 0, 0, 100%;
 }
-thead th {
+table {
+    border-collapse: collapse;
+}
+.cellalignleft {
     text-align: left;
+    min-width: 20vh;
+}
+thead th {
+    min-width: 10vh;
     top: 0px;
     flex: 1;
     position: sticky;
     background-color: black;
-    z-index: 1;
     padding-top: 0px;
+}
+td {
+    text-align: center;
+    flex: 1;
+    border: 1px, solid;
+    border-color: grey;
 }
 ::-webkit-scrollbar {
     width: 5px;
