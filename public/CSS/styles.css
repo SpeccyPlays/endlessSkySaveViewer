@@ -39,6 +39,7 @@ table {
 .cellalignleft {
     text-align: left;
     min-width: 20vh;
+    padding: 5px;
 }
 thead th {
     min-width: 10vh;
@@ -47,7 +48,12 @@ thead th {
     position: sticky;
     background-color: black;
 }
+th {
+    
+}
 td {
+    box-sizing: border-box;
+    padding-left: 10px;
     text-align: center;
     flex: 1;
     border: 1px, solid;
