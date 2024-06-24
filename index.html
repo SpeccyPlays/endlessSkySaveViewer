@@ -297,7 +297,7 @@
 function removeEmptyColumns(tableDiv) {
   var table = tableDiv;
   var colCount = table.rows[0].cells.length;
-  console.log(table.rows[0]);
+  console.log(table);
   // Check each column from right to left
   for (var i = colCount - 1; i >= 0; i--) {
     var isEmpty = true;
@@ -341,12 +341,11 @@ function removeEmptyColumns(tableDiv) {
       function addTableHeadings(keyContentDiv, key) {
         //create headings for content tables
         const header = keyContentDiv.createTHead();
+        const row = header.insertRow(0);
         const headings = returnTableHeadings();
         headings.forEach((heading) => {
-          const heading1 = document.createElement("th");
-          heading1.setAttribute("name", key + heading);
-          heading1.innerHTML = heading;
-          header.appendChild(heading1);
+          let cell = row.insertCell(-1);
+          cell.outerHTML = `<th>${heading}</th>`;
         });
         keyContentDiv.appendChild(header);
       }
