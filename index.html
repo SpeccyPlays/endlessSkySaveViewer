@@ -233,6 +233,7 @@
           cells[i].innerHTML = "";
         }
         cells[0].innerHTML = item.toString();
+        cells[0].setAttribute("class", "cellalignleft")
         cells[1].innerHTML = "";
         const statusKeywords = {
           offered: 2,
@@ -344,7 +345,13 @@
         const headings = returnTableHeadings();
         headings.forEach((heading) => {
           let cell = row.insertCell(-1);
-          cell.outerHTML = `<th>${heading}</th>`;
+          
+          if (heading == "title"){
+            cell.outerHTML = `<th class="cellalignleft">${heading}</th>`;
+          }
+          else {
+            cell.outerHTML = `<th>${heading}</th>`;
+          }
         });
         keyContentDiv.appendChild(header);
       }
