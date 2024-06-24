@@ -219,6 +219,7 @@
               console.log("There was an error :", e);
             }
           }
+          removeEmptyColumns(keyContentDiv);
         });
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
@@ -292,6 +293,40 @@
 
         evt.currentTarget.className += " active";
       }
+      // Function to remove empty columns and their headers
+function removeEmptyColumns(tableDiv) {
+  var table = tableDiv;
+  var colCount = table.rows[0].cells.length;
+  console.log(table.rows[0]);
+  // Check each column from right to left
+  for (var i = colCount - 1; i >= 0; i--) {
+    var isEmpty = true;
+
+    // Check all rows in the current column
+    for (var j = 0; j < table.rows.length; j++) {
+      var cellValue = table.rows[j].cells[i].textContent.trim();
+      if (cellValue !== "") {
+        isEmpty = false;
+        break;
+      }
+    }
+
+    // If all cells in the column are empty, remove the header and the column
+    if (isEmpty) {
+      // Remove header cell
+      var headerCell = table.rows[0].cells[i];
+      if (headerCell.tagName.toLowerCase() === 'th') {
+        headerCell.parentNode.removeChild(headerCell);
+      }
+
+      // Remove column cells for each row
+      for (var k = 0; k < table.rows.length; k++) {
+        table.rows[k].deleteCell(i);
+      }
+    }
+  }
+}
+
       function removedChildren() {
         //remove children of high level divs
         //to remove duplication if another file is opened
