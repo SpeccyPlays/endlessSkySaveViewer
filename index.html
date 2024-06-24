@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SpeccyPlays Endless Sky save file viewer</title>
+    <link rel="icon" type="image/x-icon" href="./public/images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="./public/CSS/styles.css" />
+  </head>
+  <body>
+    <div class="header">
+      <button onclick="openFile()">Open a file</button>
+      <input
+        id="inp"
+        type="file"
+        accept=".txt"
+        style="visibility: hidden"
+        onchange="readFile(event)"
+      />
+    </div>
+    <div id="filecontents">
+      <div id="pilotname"></div>
+      <div id="tabs"></div>
+      <div id="content"></div>
+    </div>
+    <script>
+      function openFile() {
+        document.getElementById("inp").click();
+      }
+      function readFile(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        if (file.type !== "text/plain") {
+          alert("Please upload a valid .txt file.");
+          return;
+        }
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          console.log("file loaded");
+          removedChildren();
+          const data = e.target.result.split("\n");
+          const output = formatData(data);
+          displayData(output);
+        };
+        reader.readAsText(file);
+      }
+      function formatData(data) {
+        let output = {
+          conditions: {},
+          event: [],
+        };
+        let topLevelLine = "";
+        for (line in data) {
+          //a lot of repeated code but slight differences between some of the values
+          const text = data[line];
+          const numOfTabs = numberOfTabs(text);
+          const newLine = text.slice(0, text.indexOf(" ")).toLowerCase();
+          if (numOfTabs == 0) {
+            topLevelLine = text;
+          }
+          if (newLine.includes("pilot") && numOfTabs == 0) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output[key]) {
+              output[key] = [];
+            }
+            output[key].push(value);
+          }
+          //Not including mission as I think it's the current live missions
+          /*if (newLine.includes("mission") && numOfTabs == 0) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf("\"") + 1).trim();
+            if (!output[key]) {
+              output[key] = [];
+            }
+            output[key].push(value);
+          }*/
+          if (newLine.includes("reputation") && numOfTabs == 0) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output[key]) {
+              output[key] = {};
+            }
+          } else if (topLevelLine.includes("reputation")) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.lastIndexOf(" "));
+            const value = tidiedText.slice(
+              tidiedText.lastIndexOf(" ") + 1,
+              tidiedText.length
+            );
+            if (!output.reputation[key]) {
+              output.reputation[key] = [];
+            }
+            output.reputation[key].push(value);
+          }
+          if (newLine.includes("conditions") && numOfTabs == 0) {
+            //seems pointless but stops extra value being added
+            if (!output.conditions) {
+              output.conditions = {};
+            }
+          } else if (topLevelLine.includes("conditions")) {
+            //groups the different missions a bit better
+            const tidiedText = text.trim().replace(/"/g, "");
+            let key = "";
+            let value = "";
+            //Some conditions are events so account for this
+            //this is really messy but works
+            if (
+              tidiedText.slice(0, tidiedText.indexOf(":")).includes("event")
+            ) {
+              key = tidiedText.slice(0, tidiedText.indexOf(":"));
+              value = tidiedText.slice(tidiedText.indexOf(":") + 1).trim();
+            } else {
+              key = tidiedText.slice(0, tidiedText.lastIndexOf(":"));
+              value = tidiedText.slice(tidiedText.lastIndexOf(":") + 1).trim();
+            }
+
+            if (key.includes("event")) {
+              output.event.push(value);
+            } else if (!output.conditions[key]) {
+              output.conditions[key] = [];
+              output.conditions[key].push(value);
+            } else {
+              output.conditions[key].push(value);
+            }
+          }
+          if (newLine.includes("tribute") && numOfTabs == 0) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output[key]) {
+              output[key] = {};
+            }
+          } else if (topLevelLine.includes("tribute")) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output.tribute[key]) {
+              output.tribute[key] = [];
+            }
+            output.tribute[key].push(value);
+          }
+          if (newLine.includes("visited") && numOfTabs == 0) {
+            const tidiedText = text.trim().replace(/"/g, "");
+            const key = tidiedText.slice(0, tidiedText.indexOf(" "));
+            const value = tidiedText.slice(tidiedText.indexOf(" ") + 1).trim();
+            if (!output[key]) {
+              output[key] = [];
+            }
+            output[key].push(value);
+          }
+
+          /*
+          commenting out ship as I think the game makes ship data easily viewable
+          if (newLine.includes("ship") && numOfTabs == 0) {
+            if (!output.ships){
+              output.ships = [];
+            }
+            output.ships.push(text);
+          } else if (topLevelLine.includes("ship")) {
+            output.ships.push(text);
+          }*/
+        }
+        return output;
+      }
+      function displayData(output) {
+        /*
+          Section to set up the html
+          The output is all key:array apart from confitions which has another level of keys before the array
+          */
+        const tabsDiv = document.getElementById("tabs");
+        const contentDiv = document.getElementById("content");
+        //add pilot as heading and remove from ouput so doesn't get added as a tab
+        if (output.pilot && output.pilot.length > 0) {
+          const pilotDiv = document.getElementById("pilotname");
+          const heading = document.createElement("h3");
+          heading.innerText = "Pilot: " + output.pilot[0];
+          pilotDiv.appendChild(heading);
+          delete output.pilot;
+        }
+        const keys = Object.keys(output);
+        keys.forEach((key) => {
+          //create the buttons
+          const keyDiv = document.createElement("button");
+          keyDiv.setAttribute("class", "tablinks");
+          keyDiv.setAttribute("name", key);
+          keyDiv.onclick = function (e) {
+            openTab(e, e.target.name);
+          };
+          keyDiv.innerHTML = key.toString();
+          tabsDiv.appendChild(keyDiv);
+          //create the content table
+          const keyContentDiv = document.createElement("table");
+          keyContentDiv.setAttribute("id", key);
+          keyContentDiv.setAttribute("class", "tabcontent");
+          //add headings
+          addTableHeadings(keyContentDiv, key);
+          contentDiv.appendChild(keyContentDiv);
+          if (Array.isArray(output[key])) {
+            try {
+              output[key].forEach((item) => {
+                //create tab content
+                setSubContent(item, keyDiv, keyContentDiv, output);
+              });
+            } catch (e) {
+              console.log("There was an error :", e);
+            }
+          } else if (checkIfObject(output[key])) {
+            try {
+              const conditionKeys = Object.keys(output[key]);
+              conditionKeys.forEach((item) => {
+                if (Array.isArray(output[key][item])) {
+                  setSubContent(item, keyDiv, keyContentDiv, output[key]);
+                }
+              });
+            } catch (e) {
+              console.log("There was an error :", e);
+            }
+          }
+          removeEmptyCols(keyContentDiv);
+        });
+      }
+      function setSubContent(item, keyDiv, contentDiv, output) {
+        const row = contentDiv.insertRow(-1);
+        const headings = returnTableHeadings();
+        let cells = [];
+        //go backwards to create in correct order
+        for (let i = headings.length - 1; i >= 0; i--) {
+          cells[i] = row.insertCell(0);
+          //default to a cross and change if positive later
+          cells[i].innerHTML = "";
+        }
+        cells[0].innerHTML = item.toString();
+        cells[1].innerHTML = "";
+        const statusKeywords = {
+          offered: 2,
+          done: 3,
+          failed: 4,
+          aborted: 5,
+          declined: 6,
+        };
+        if (output[item] != undefined && Array.isArray(output[item])) {
+          //check all values in array to see if any only contain numbers
+          //this for the reputation & tribute - should only be one value
+          output[item].forEach((arrayItem) => {
+            // Check if the item is a number
+            if (arrayItem.match(/^-?\d+(\.\d+)?$/) != null) {
+              cells[1].innerHTML = arrayItem.toString();
+            }
+
+            // Loop through the status keywords to handle each case programmatically -
+            //yeah chat gpt did this bit as it was way too manual before
+            for (const [keyword, index] of Object.entries(statusKeywords)) {
+              if (arrayItem.includes(keyword)) {
+                const hasNumber = arrayItem.match(/\d+/);
+                let value = "";
+                if (hasNumber) {
+                  value = hasNumber[0].toString();
+                }
+                cells[index].innerHTML = value + "✓";
+                break; // Exit the loop after the first match
+              }
+            }
+          });
+        }
+      }
+      function numberOfTabs(text) {
+        return text.match(/^\s*/)[0].length;
+      }
+      function checkIfObject(obj) {
+        return typeof obj === "object" && obj !== null;
+      }
+      function openTab(evt, tabName) {
+        console.log("Click registered ", tabName);
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+      }
+      function removeEmptyCols(table) {
+        const rows = table.rows;
+        if (rows.length === 0) return;
+
+        const colCount = rows[0].cells.length;
+        const emptyCols = new Array(colCount).fill(true);
+
+        // Check for empty columns
+        for (let i = 1; i < rows.length; i++) {
+          // Start from 1 to skip the header row
+          for (let j = 0; j < colCount; j++) {
+            if (rows[i].cells[j].textContent.trim() !== "") {
+              emptyCols[j] = false;
+            }
+          }
+        }
+        // Delete empty columns
+        for (let j = colCount - 1; j >= 0; j--) {
+          // Iterate from last to first to avoid index issues
+          if (emptyCols[j]) {
+            for (let i = 0; i < rows.length; i++) {
+              rows[i].deleteCell(j);
+            }
+          }
+        }
+        // Check if the header cell is empty after deleting columns
+        var headers = table.getElementsByTagName("th");
+        for (var h = headers.length - 1; h >= 0; h--) {
+          if (headers[h].textContent.trim() === "") {
+            headers[h].parentNode.removeChild(headers[h]);
+          }
+        }
+      }
+
+      function removedChildren() {
+        //remove children of high level divs
+        //to remove duplication if another file is opened
+        const highLevelDivs = ["pilotname", "tabs", "content"];
+        highLevelDivs.forEach((divName) => {
+          const element = document.getElementById(divName);
+          while (element.firstChild) {
+            element.removeChild(element.firstChild);
+          }
+        });
+      }
+      function addTableHeadings(keyContentDiv, key) {
+        //create headings for content tables
+        const header = keyContentDiv.createTHead();
+        const row = header.insertRow(0);
+        const headings = returnTableHeadings();
+        headings.forEach((heading) => {
+          let cell = row.insertCell(-1);
+          cell.outerHTML = `<th>${heading}</th>`;
+        });
+        keyContentDiv.appendChild(header);
+      }
+      function returnTableHeadings() {
+        //these are used in a couple of places so putting in one function for ease of editing
+        const headings = [
+          "title",
+          "value",
+          "offered",
+          "done",
+          "failed",
+          "aborted",
+          "declined",
+        ];
+        return headings;
+      }
+    </script>
+  </body>
+</html>
