@@ -219,7 +219,7 @@
               console.log("There was an error :", e);
             }
           }
-          removeEmptyColumns(keyContentDiv);
+          removeEmptyCols(keyContentDiv);
         });
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
@@ -290,42 +290,41 @@
         }
         // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(tabName).style.display = "block";
-
         evt.currentTarget.className += " active";
       }
-      // Function to remove empty columns and their headers
-function removeEmptyColumns(tableDiv) {
-  var table = tableDiv;
-  var colCount = table.rows[0].cells.length;
-  console.log(table);
-  // Check each column from right to left
-  for (var i = colCount - 1; i >= 0; i--) {
-    var isEmpty = true;
+      function removeEmptyCols(table) {
+        const rows = table.rows;
+        if (rows.length === 0) return;
 
-    // Check all rows in the current column
-    for (var j = 0; j < table.rows.length; j++) {
-      var cellValue = table.rows[j].cells[i].textContent.trim();
-      if (cellValue !== "") {
-        isEmpty = false;
-        break;
-      }
-    }
+        const colCount = rows[0].cells.length;
+        const emptyCols = new Array(colCount).fill(true);
 
-    // If all cells in the column are empty, remove the header and the column
-    if (isEmpty) {
-      // Remove header cell
-      var headerCell = table.rows[0].cells[i];
-      if (headerCell.tagName.toLowerCase() === 'th') {
-        headerCell.parentNode.removeChild(headerCell);
+        // Check for empty columns
+        for (let i = 1; i < rows.length; i++) {
+          // Start from 1 to skip the header row
+          for (let j = 0; j < colCount; j++) {
+            if (rows[i].cells[j].textContent.trim() !== "") {
+              emptyCols[j] = false;
+            }
+          }
+        }
+        // Delete empty columns
+        for (let j = colCount - 1; j >= 0; j--) {
+          // Iterate from last to first to avoid index issues
+          if (emptyCols[j]) {
+            for (let i = 0; i < rows.length; i++) {
+              rows[i].deleteCell(j);
+            }
+          }
+        }
+        // Check if the header cell is empty after deleting columns
+        var headers = table.getElementsByTagName("th");
+        for (var h = headers.length - 1; h >= 0; h--) {
+          if (headers[h].textContent.trim() === "") {
+            headers[h].parentNode.removeChild(headers[h]);
+          }
+        }
       }
-
-      // Remove column cells for each row
-      for (var k = 0; k < table.rows.length; k++) {
-        table.rows[k].deleteCell(i);
-      }
-    }
-  }
-}
 
       function removedChildren() {
         //remove children of high level divs
