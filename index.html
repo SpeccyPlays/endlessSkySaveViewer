@@ -219,6 +219,7 @@
               console.log("There was an error :", e);
             }
           }
+          removeEmptyCols(keyContentDiv);
         });
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
@@ -289,9 +290,42 @@
         }
         // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(tabName).style.display = "block";
-
         evt.currentTarget.className += " active";
       }
+      function removeEmptyCols(table) {
+        const rows = table.rows;
+        if (rows.length === 0) return;
+
+        const colCount = rows[0].cells.length;
+        const emptyCols = new Array(colCount).fill(true);
+
+        // Check for empty columns
+        for (let i = 1; i < rows.length; i++) {
+          // Start from 1 to skip the header row
+          for (let j = 0; j < colCount; j++) {
+            if (rows[i].cells[j].textContent.trim() !== "") {
+              emptyCols[j] = false;
+            }
+          }
+        }
+        // Delete empty columns
+        for (let j = colCount - 1; j >= 0; j--) {
+          // Iterate from last to first to avoid index issues
+          if (emptyCols[j]) {
+            for (let i = 0; i < rows.length; i++) {
+              rows[i].deleteCell(j);
+            }
+          }
+        }
+        // Check if the header cell is empty after deleting columns
+        var headers = table.getElementsByTagName("th");
+        for (var h = headers.length - 1; h >= 0; h--) {
+          if (headers[h].textContent.trim() === "") {
+            headers[h].parentNode.removeChild(headers[h]);
+          }
+        }
+      }
+
       function removedChildren() {
         //remove children of high level divs
         //to remove duplication if another file is opened
@@ -306,12 +340,11 @@
       function addTableHeadings(keyContentDiv, key) {
         //create headings for content tables
         const header = keyContentDiv.createTHead();
+        const row = header.insertRow(0);
         const headings = returnTableHeadings();
         headings.forEach((heading) => {
-          const heading1 = document.createElement("th");
-          heading1.setAttribute("name", key + heading);
-          heading1.innerHTML = heading;
-          header.appendChild(heading1);
+          let cell = row.insertCell(-1);
+          cell.outerHTML = `<th>${heading}</th>`;
         });
         keyContentDiv.appendChild(header);
       }
