@@ -20,6 +20,7 @@
       <div id="pilotname"></div>
       <div id="tabs"></div>
       <div id="content"></div>
+      <div id="tooltip" class="tooltip"></div>
     </div>
     <script>
       function openFile() {
@@ -224,6 +225,9 @@
       }
       function setSubContent(item, keyDiv, contentDiv, output) {
         const row = contentDiv.insertRow(-1);
+        row.addEventListener("mouseover", mouseOverTable);
+        row.addEventListener("mouseout", mouseOutTable);
+        row.addEventListener("mousemove", moveMoveTable);
         const headings = returnTableHeadings();
         let cells = [];
         //go backwards to create in correct order
@@ -233,6 +237,7 @@
           cells[i].innerHTML = "";
         }
         cells[0].innerHTML = item.toString();
+        cells[0].setAttribute("class", "cellalignleft")
         cells[1].innerHTML = "";
         const statusKeywords = {
           offered: 2,
@@ -292,6 +297,35 @@
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
       }
+      function mouseOverTable(evt){
+        /*
+        Show a tooltip and summary of the row on the table the mouse is over
+        */
+        const tooltip = document.getElementById('tooltip');
+        const table = event.target.closest('table');
+        const target = event.target.closest('tr');
+        if (target) {
+          const headers = table.querySelectorAll('thead th');
+            const cells = target.querySelectorAll('td');
+            let tooltipText = '';
+            headers.forEach((header, index) => {
+                if (cells[index].textContent != ""){
+                  console.log(cells[index]);
+                  tooltipText += `${header.textContent}: ${cells[index].textContent}\n`;
+                }
+                
+            });
+            tooltip.style.display = 'block';
+            tooltip.textContent = tooltipText;
+        }
+      }
+      function moveMoveTable(evt){
+        tooltip.style.top = event.pageY + 10 + 'px';
+        tooltip.style.left = event.pageX + 10 + 'px';
+      }
+      function mouseOutTable(evt){
+        tooltip.style.display = 'none';
+      }
       function removeEmptyCols(table) {
         const rows = table.rows;
         if (rows.length === 0) return;
@@ -344,7 +378,13 @@
         const headings = returnTableHeadings();
         headings.forEach((heading) => {
           let cell = row.insertCell(-1);
-          cell.outerHTML = `<th>${heading}</th>`;
+          
+          if (heading == "title"){
+            cell.outerHTML = `<th class="cellalignleft">${heading}</th>`;
+          }
+          else {
+            cell.outerHTML = `<th>${heading}</th>`;
+          }
         });
         keyContentDiv.appendChild(header);
       }

@@ -6,15 +6,14 @@ body {
     margin: 0;
     padding: 10px;
     background-color: black;
-    color: gray;
+    color: grey;
 }
 .header {
-    border-style: solid;
+    border-color: grey;
 }
 button {
     background-color: black;
-    color: gray;
-    border-color: grey;
+    color: grey;
 }
 #filecontent {
     height: 80vh;
@@ -30,18 +29,49 @@ button {
     flex: 1;
     display: none;
     overflow-y: scroll;
-    height: 75vh;
+    height: 80vh;
     border-color: grey;
     flex: 0, 0, 100%;
+    
+}
+table {
+    border-collapse: collapse;
+    
+}
+.cellalignleft {
+    text-align: left;
+    min-width: 20vh;
+    padding: 5px;
 }
 thead th {
-    text-align: left;
+    min-width: 10vh;
     top: 0px;
     flex: 1;
     position: sticky;
     background-color: black;
     z-index: 1;
-    padding-top: 0px;
+    
+}
+tr:hover {
+    border: 1px, solid;
+    border-color: grey;
+}
+.tooltip {
+    position: absolute;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    color:grey;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+}
+td {
+    border-collapse: collapse;
+    box-sizing: border-box;
+    padding-left: 10px;
+    text-align: center;
+    flex: 1;
 }
 ::-webkit-scrollbar {
     width: 5px;
