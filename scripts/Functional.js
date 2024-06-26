@@ -1,8 +1,6 @@
 /*
 Contains the functions that are called upon during user navigation
 */
-
-      
 function openTab(evt, tabName) {
     console.log("Click registered ", tabName);
     // Declare all variables
@@ -28,15 +26,14 @@ function openTab(evt, tabName) {
     Show a tooltip and summary of the row on the table the mouse is over
     */
     const tooltip = document.getElementById('tooltip');
-    const table = event.target.closest('table');
-    const target = event.target.closest('tr');
+    const table = evt.target.closest('table');
+    const target = evt.target.closest('tr');
     if (target) {
       const headers = table.querySelectorAll('thead th');
         const cells = target.querySelectorAll('td');
         let tooltipText = '';
         headers.forEach((header, index) => {
             if (cells[index].textContent != ""){
-              console.log(cells[index]);
               tooltipText += `${header.textContent}: ${cells[index].textContent}\n`;
             }
             
@@ -46,8 +43,8 @@ function openTab(evt, tabName) {
     }
   }
   function moveMoveTable(evt){
-    tooltip.style.top = event.pageY + 10 + 'px';
-    tooltip.style.left = event.pageX + 10 + 'px';
+    tooltip.style.top = evt.pageY + 10 + 'px';
+    tooltip.style.left = evt.pageX + 10 + 'px';
   }
   function mouseOutTable(evt){
     tooltip.style.display = 'none';

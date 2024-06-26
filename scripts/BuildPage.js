@@ -1,7 +1,6 @@
 /*
 Contains all of the functions around initially building the page content
 */
-
 function displayData(output) {
     /*
       Section to set up the html

@@ -1,7 +1,6 @@
 /*
 Contains the functions that format the data from the text file
 */
-
 function formatData(data) {
     let output = {
       conditions: {},
