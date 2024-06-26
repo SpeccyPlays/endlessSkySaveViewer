@@ -52,14 +52,26 @@ thead th {
     z-index: 1;
     
 }
+tr:hover {
+    border: 1px, solid;
+    border-color: grey;
+}
+.tooltip {
+    position: absolute;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    color:grey;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+}
 td {
     border-collapse: collapse;
     box-sizing: border-box;
     padding-left: 10px;
     text-align: center;
     flex: 1;
-    border: 1px, solid;
-    border-color: grey;
 }
 ::-webkit-scrollbar {
     width: 5px;
