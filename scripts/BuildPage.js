@@ -7,7 +7,7 @@ function displayData(output) {
       The output is all key:array apart from confitions which has another level of keys before the array
       */
     const tabsDiv = document.getElementById("tabs");
-    const contentDiv = document.getElementById("content");
+    const content = document.getElementById("content");
     //add pilot as heading and remove from ouput so doesn't get added as a tab
     if (output.pilot && output.pilot.length > 0) {
       const pilotDiv = document.getElementById("pilotname");
@@ -18,6 +18,9 @@ function displayData(output) {
     }
     const keys = Object.keys(output);
     keys.forEach((key) => {
+      const contentDiv = document.createElement("div");
+      contentDiv.setAttribute("name", key);
+      content.appendChild(contentDiv);
       //create the buttons
       const keyDiv = document.createElement("button");
       keyDiv.setAttribute("class", "tablinks");

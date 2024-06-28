@@ -38,7 +38,6 @@ button {
     background-color: black;
     color: grey;
     border: none;
-    padding: 10px;
     display: none;
 }
 .search:focus {
