@@ -17,6 +17,8 @@ function displayData(output) {
       delete output.pilot;
     }
     const keys = Object.keys(output);
+    //counter is going to be used to set the first content to open by default
+    let counter = 0;
     keys.forEach((key) => {
       const contentDiv = document.createElement("div");
       contentDiv.setAttribute("name", key);
@@ -25,6 +27,10 @@ function displayData(output) {
       const keyDiv = document.createElement("button");
       keyDiv.setAttribute("class", "tablinks");
       keyDiv.setAttribute("name", key);
+      //set key to open by default - this is ugly
+      if (counter == 0){
+        keyDiv.className += " defaultOpen";
+      }
       keyDiv.onclick = function (e) {
         openTab(e, e.target.name);
       };
@@ -67,6 +73,7 @@ function displayData(output) {
         } catch (e) {
           console.log("There was an error :", e);
         }
+        counter ++;
       }
       removeEmptyCols(keyContentDiv);
     });

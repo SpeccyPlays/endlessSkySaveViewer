@@ -45,6 +45,7 @@
           const data = e.target.result.split("\n");
           const output = formatData(data);
           displayData(output);
+          document.getElementsByClassName("defaultOpen")[0].click();
         };
         reader.readAsText(file);
       }
