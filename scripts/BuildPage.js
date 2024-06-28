@@ -27,10 +27,20 @@ function displayData(output) {
       };
       keyDiv.innerHTML = key.toString();
       tabsDiv.appendChild(keyDiv);
+      const search = document.createElement("input");
+      search.type = "text";
+      search.name = `${key}search`;
+      search.placeholder ="Search..";
+      search.className = "search";
+      search.onkeyup = function (e) {
+        searchTable(e);
+      }
+      contentDiv.appendChild(search);
       //create the content table
       const keyContentDiv = document.createElement("table");
       keyContentDiv.setAttribute("id", key);
       keyContentDiv.setAttribute("class", "tabcontent");
+      
       //add headings
       addTableHeadings(keyContentDiv, key);
       contentDiv.appendChild(keyContentDiv);

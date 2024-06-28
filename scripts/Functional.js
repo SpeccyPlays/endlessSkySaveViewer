@@ -4,7 +4,7 @@ Contains the functions that are called upon during user navigation
 function openTab(evt, tabName) {
     console.log("Click registered ", tabName);
     // Declare all variables
-    var i, tabcontent, tablinks;
+    var i, tabcontent, tablinks, searchInputs;
 
     // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -17,7 +17,21 @@ function openTab(evt, tabName) {
     for (i = 0; i < tablinks.length; i++) {
       tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    // Show the current tab, and add an "active" class to the button that opened the tab
+    //hide all the search inputs
+    searchInputs = document.getElementsByClassName("search");
+    for (let i = 0; i < searchInputs.length; i++){
+      searchInputs[i].style.display = "none";
+      searchInputs[i].className = searchInputs[i].className.replace(" active", "");
+    }
+    
+    //find the search input related to the tab selected and show it
+    const searchInput = document.getElementsByName(tabName+"search");
+    if (searchInput.length > 0){
+      //There should only ever be one search element with the name
+      searchInput[0].style.display = "block";
+      searchInput[0].className += " active";
+    }
+    // Show the current tab and add an "active" class to the button that opened the tab
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
   }
@@ -48,4 +62,7 @@ function openTab(evt, tabName) {
   }
   function mouseOutTable(evt){
     tooltip.style.display = 'none';
+  }
+  function searchTable(evt){
+
   }

@@ -34,6 +34,16 @@ button {
     flex: 0, 0, 100%;
     
 }
+.search {
+    background-color: black;
+    color: grey;
+    border: none;
+    padding: 10px;
+    display: none;
+}
+.search:focus {
+    outline: none;
+}
 table {
     border-collapse: collapse;
     
