@@ -1,93 +1,113 @@
 body {
-    display : flex;
+    display: flex;
     flex-direction: column;
     border-style: solid;
-    height: 95vh;
+    height: 96vh;
     margin: 0;
     padding: 10px;
     background-color: black;
     color: grey;
+    overflow: hidden; /* Ensure no overflow for the body */
 }
+
 .header {
     border-color: grey;
 }
+
 button {
     background-color: black;
     color: grey;
 }
+
 #filecontent {
     height: 80vh;
+    overflow: hidden; /* Ensure no overflow for the file content */
 }
+
 #tabs {
     flex-direction: row;
-    width: 80vh;
+    width: 100%; /* Use percentage for width to ensure it fits within the body */
 }
+
 .tablinks {
-    flex: 0, 0, 100%;
+    flex: 0 0 100%; /* Corrected flex shorthand syntax */
+    padding: 5px;
 }
+
 .tabcontent {
     flex: 1;
     display: none;
-    overflow-y: scroll;
-    height: 80vh;
+    overflow-y: auto; /* Allow vertical scroll if content overflows */
+    height: 76vh;
     border-color: grey;
-    flex: 0, 0, 100%;
-    
+    width: 100%; /* Ensure tab content takes full width */
 }
+
 .search {
+    flex: auto;
     background-color: black;
     color: grey;
-    border: none;
-    display: none;
+    display: block; /* Ensure search input is displayed */
+    padding: 5px;
+    z-index: 10; /* Ensure search input is above other elements */
 }
+
 .search:focus {
-    outline: none;
+    outline-color: grey; /* Corrected outline color */
+    outline-style: solid;
 }
+
 table {
     border-collapse: collapse;
-    
+    width: 100%; /* Ensure table fits within the container */
+    overflow: hidden; /* Prevent overflow */
+    table-layout: fixed; /* Ensure table layout is fixed */
 }
+
 .cellalignleft {
     text-align: left;
     min-width: 20vh;
     padding: 5px;
 }
+
 thead th {
     min-width: 10vh;
-    top: 0px;
-    flex: 1;
+    top: 0;
     position: sticky;
     background-color: black;
     z-index: 1;
-    
 }
+
 tr:hover {
-    border: 1px, solid;
-    border-color: grey;
+    border: 1px solid grey; /* Corrected border syntax */
 }
+
 .tooltip {
     position: absolute;
     display: none;
     background-color: rgba(0, 0, 0, 0.8);
-    color:grey;
+    color: grey;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 12px;
     z-index: 1000;
 }
+
 td {
     border-collapse: collapse;
     box-sizing: border-box;
     padding-left: 10px;
     text-align: center;
     flex: 1;
+    overflow: hidden; /* Ensure no overflow for table cells */
 }
+
 ::-webkit-scrollbar {
-    width: 5px;
-    background: transparent;  /* Optional: just make scrollbar invisible */
+    width: 2px;
+    background: transparent; /* Optional: just make scrollbar invisible */
 }
-/* Optional: show position indicator in red */
+
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
+    border-radius: 2px;
     background: grey;
 }
