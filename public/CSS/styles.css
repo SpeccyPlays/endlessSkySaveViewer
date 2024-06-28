@@ -47,7 +47,7 @@ button {
     flex: auto;
     background-color: black;
     color: grey;
-    display: block; /* Ensure search input is displayed */
+    display: none; /* Ensure search input is displayed */
     padding: 5px;
     z-index: 10; /* Ensure search input is above other elements */
 }

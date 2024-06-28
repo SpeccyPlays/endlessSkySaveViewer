@@ -86,3 +86,14 @@ function searchTable(evt) {
     }
   }
 }
+function removedChildren() {
+  //remove children of high level divs
+  //to remove duplication if another file is opened
+  const highLevelDivs = ["pilotname", "tabs", "content"];
+  highLevelDivs.forEach((divName) => {
+    const element = document.getElementById(divName);
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  });
+}
