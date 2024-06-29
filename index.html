@@ -27,16 +27,6 @@
       <div id="tooltip" class="tooltip"></div>
     </div>
     <script>
-      /*
-          SpeccyPlays file
-          Whole load took:  0.214
-          Formatting data took:  0.025
-          Displaying data took:  0.184
-          SpeccyPlays2 file
-          Whole load took:  0.383
-          Formatting data took:  0.035
-          Displaying data took:  0.337
-      */
       function openFile() {
         document.getElementById("inp").click();
       }
@@ -50,22 +40,12 @@
         var reader = new FileReader();
 
         reader.onload = function (e) {
-          let wnoleLoadStart, formatStart, displayStart, wholeLoadEnd, formatEnd, displayEnd;
-          wholeLoadStart = Date.now();
           console.log("file loaded");
           removedChildren();
           const data = e.target.result.split("\n");
-          formatStart = Date.now();
           const output = formatData(data);
-          formatEnd = Date.now();
-          displayStart = Date.now();
           displayData(output);
-          displayEnd = Date.now();
           document.getElementsByClassName("defaultOpen")[0].click();
-          wholeLoadEnd = Date.now();
-          console.log("Whole load took: ", (wholeLoadEnd - wholeLoadStart) / 1000);
-          console.log("Formatting data took: ", (formatEnd - formatStart) / 1000);
-          console.log("Displaying data took: ", (displayEnd - displayStart) / 1000)
         };
         reader.readAsText(file);
       }
