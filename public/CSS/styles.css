@@ -101,6 +101,10 @@ td {
     flex: 1;
     overflow: hidden; /* Ensure no overflow for table cells */
 }
+.editbutton {
+    background-color: black;
+    color: grey;
+}
 
 ::-webkit-scrollbar {
     width: 2px;

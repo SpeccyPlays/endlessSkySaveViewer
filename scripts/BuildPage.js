@@ -179,7 +179,7 @@ function displayData(output) {
       "failed",
       "aborted",
       "declined",
-      ""
+      "       "
     ];
     return headings;
   }
