@@ -19,10 +19,14 @@ function displayData(output) {
     const keys = Object.keys(output);
     //counter is going to be used to set the first content to open by default
     let counter = 0;
+
+    const fragmentTabs = document.createDocumentFragment();
+    const fragmentContent = document.createDocumentFragment();
+
     keys.forEach((key) => {
       const contentDiv = document.createElement("div");
       contentDiv.setAttribute("name", key);
-      content.appendChild(contentDiv);
+      fragmentContent.appendChild(contentDiv);
       //create the buttons
       const keyDiv = document.createElement("button");
       keyDiv.setAttribute("class", "tablinks");
@@ -31,19 +35,16 @@ function displayData(output) {
       if (counter == 0){
         keyDiv.className += " defaultOpen";
       }
-      keyDiv.onclick = function (e) {
-        openTab(e, e.target.name);
-      };
+      keyDiv.onclick = (e) => openTab(e, e.target.name);
       keyDiv.innerHTML = key.toString();
-      tabsDiv.appendChild(keyDiv);
+      fragmentTabs.appendChild(keyDiv);
+      //setup search box
       const search = document.createElement("input");
       search.type = "text";
       search.name = `${key}search`;
       search.placeholder ="Search..";
       search.className = "search";
-      search.onkeyup = function (e) {
-        searchTable(e);
-      }
+      search.onkeyup = (e) => searchTable(e);
       contentDiv.appendChild(search);
       //create the content table
       const keyContentDiv = document.createElement("table");
@@ -55,10 +56,7 @@ function displayData(output) {
       contentDiv.appendChild(keyContentDiv);
       if (Array.isArray(output[key])) {
         try {
-          output[key].forEach((item) => {
-            //create tab content
-            setSubContent(item, keyDiv, keyContentDiv, output);
-          });
+          output[key].forEach((item) => setSubContent(item, keyDiv, keyContentDiv, output));
         } catch (e) {
           console.log("There was an error :", e);
         }
@@ -73,10 +71,12 @@ function displayData(output) {
         } catch (e) {
           console.log("There was an error :", e);
         }
-        counter ++;
       }
+      counter ++;
       removeEmptyCols(keyContentDiv);
     });
+    tabsDiv.appendChild(fragmentTabs);
+    content.appendChild(fragmentContent);
   }
   function setSubContent(item, keyDiv, contentDiv, output) {
     const row = contentDiv.insertRow(-1);
@@ -84,13 +84,7 @@ function displayData(output) {
     row.addEventListener("mouseout", mouseOutTable);
     row.addEventListener("mousemove", moveMoveTable);
     const headings = returnTableHeadings();
-    let cells = [];
-    //go backwards to create in correct order
-    for (let i = headings.length - 1; i >= 0; i--) {
-      cells[i] = row.insertCell(0);
-      //default to a cross and change if positive later
-      cells[i].innerHTML = "";
-    }
+    let cells = Array(headings.length).fill(null).map(() => row.insertCell(-1));
     cells[0].innerHTML = item.toString();
     cells[0].setAttribute("class", "cellalignleft")
     cells[1].innerHTML = "";
@@ -105,20 +99,16 @@ function displayData(output) {
       //check all values in array to see if any only contain numbers
       //this for the reputation & tribute - should only be one value
       output[item].forEach((arrayItem) => {
-        // Check if the item is a number
-        if (arrayItem.match(/^-?\d+(\.\d+)?$/) != null) {
-          cells[1].innerHTML = arrayItem.toString();
+
+        if (/^-?\d+(\.\d+)?$/.test(arrayItem)) {
+          cells[1].innerHTML = arrayItem
         }
 
         // Loop through the status keywords to handle each case programmatically -
         //yeah chat gpt did this bit as it was way too manual before
         for (const [keyword, index] of Object.entries(statusKeywords)) {
           if (arrayItem.includes(keyword)) {
-            const hasNumber = arrayItem.match(/\d+/);
-            let value = "";
-            if (hasNumber) {
-              value = hasNumber[0].toString();
-            }
+            let value = (arrayItem.match(/\d+/) || [""])[0];
             cells[index].innerHTML = value + "✓";
             break; // Exit the loop after the first match
           }
@@ -169,13 +159,7 @@ function displayData(output) {
     const headings = returnTableHeadings();
     headings.forEach((heading) => {
       let cell = row.insertCell(-1);
-      
-      if (heading == "title"){
-        cell.outerHTML = `<th class="cellalignleft">${heading}</th>`;
-      }
-      else {
-        cell.outerHTML = `<th>${heading}</th>`;
-      }
+      cell.outerHTML = heading === "title" ? `<th class="cellalignleft">${heading}</th>` : `<th>${heading}</th>`;
     });
     keyContentDiv.appendChild(header);
   }
