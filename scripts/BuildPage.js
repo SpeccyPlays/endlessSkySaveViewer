@@ -52,7 +52,7 @@ function displayData(output) {
       keyContentDiv.setAttribute("class", "tabcontent");
       
       //add headings
-      addTableHeadings(keyContentDiv, key);
+      addTableHeadings(keyContentDiv);
       contentDiv.appendChild(keyContentDiv);
       if (Array.isArray(output[key])) {
         try {
@@ -115,6 +115,12 @@ function displayData(output) {
         }
       });
     }
+    let editButton = document.createElement('input');
+    editButton.type = "button";
+    editButton.className = "editbutton";
+    editButton.innerHTML = "Edit";
+    editButton.value = "Edit";
+    cells[cells.length - 1].appendChild(editButton);
   }
   function checkIfObject(obj) {
     return typeof obj === "object" && obj !== null;
@@ -152,7 +158,7 @@ function displayData(output) {
       }
     }
   }
-  function addTableHeadings(keyContentDiv, key) {
+  function addTableHeadings(keyContentDiv) {
     //create headings for content tables
     const header = keyContentDiv.createTHead();
     const row = header.insertRow(0);
@@ -173,6 +179,7 @@ function displayData(output) {
       "failed",
       "aborted",
       "declined",
+      ""
     ];
     return headings;
   }
