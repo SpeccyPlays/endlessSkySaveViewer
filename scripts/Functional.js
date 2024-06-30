@@ -68,6 +68,24 @@ function searchTable(evt) {
     }
   }
 }
+function clickEditButton(evt){
+  //shows the delete checkboxes
+  const row = evt.target.closest("tr");
+  if (row){
+    const cells = row.querySelectorAll("td");
+    if (cells){
+      cells.forEach(cell => {;
+        const button = cell.firstElementChild;
+        //make sure the edit button doesn't get hidden
+        if (button != null && button.type == "checkbox"){
+          //have to use getComputedStyle as CSS sets the first value
+          button.style.display = (window.getComputedStyle(button, null).display === "none") ? "block" : "none";
+        }
+      })
+    }
+  }
+  
+}
 function removedChildren() {
   //remove children of high level divs
   //to remove duplication if another file is opened

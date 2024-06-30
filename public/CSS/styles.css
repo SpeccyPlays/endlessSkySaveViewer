@@ -76,6 +76,7 @@ thead th {
     position: sticky;
     background-color: black;
     z-index: 1;
+    box-sizing: border-box;
 }
 
 tr:hover {
@@ -105,7 +106,13 @@ td {
     background-color: black;
     color: grey;
 }
-
+.deletecheck {
+    margin: auto;
+    display: none;
+}
+input[type='checkbox']{
+    accent-color: grey;
+}
 ::-webkit-scrollbar {
     width: 2px;
     background: transparent; /* Optional: just make scrollbar invisible */

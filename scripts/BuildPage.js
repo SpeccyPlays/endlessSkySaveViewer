@@ -110,17 +110,31 @@ function displayData(output) {
           if (arrayItem.includes(keyword)) {
             let value = (arrayItem.match(/\d+/) || [""])[0];
             cells[index].innerHTML = value + "✓";
+            //add a hidden checkbox to each
+            let deleteCheck = document.createElement("input");
+            deleteCheck.type = "checkbox";
+            deleteCheck.className = "deletecheck";
+            deleteCheck.value = "Delete";
+            cells[index].appendChild(deleteCheck);
             break; // Exit the loop after the first match
           }
         }
+
       });
     }
-    let editButton = document.createElement('input');
-    editButton.type = "button";
-    editButton.className = "editbutton";
-    editButton.innerHTML = "Edit";
-    editButton.value = "Edit";
-    cells[cells.length - 1].appendChild(editButton);
+    const editableList = getEditableItems();
+    if (editableList.includes(keyDiv.name)){
+      let editButton = document.createElement("input");
+      editButton.type = "button";
+      editButton.className = "editbutton";
+      //Only conditions can delete
+      const text = (keyDiv.name === "conditions") ? "Delete" : "Edit";
+      editButton.innerHTML = text;
+      editButton.value = text;
+      editButton.onclick = (e) => clickEditButton(e);
+      cells[cells.length - 1].appendChild(editButton);
+    };
+    
   }
   function checkIfObject(obj) {
     return typeof obj === "object" && obj !== null;
@@ -179,7 +193,15 @@ function displayData(output) {
       "failed",
       "aborted",
       "declined",
-      "       "
+      "        "//used for edit button
     ];
     return headings;
+  }
+  function getEditableItems(){
+    const editableItems = [
+      "conditions",
+      "reputation",
+      "tribute"
+    ]
+    return editableItems;
   }
