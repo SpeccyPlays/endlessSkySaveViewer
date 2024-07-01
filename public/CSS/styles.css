@@ -113,6 +113,9 @@ td {
 input[type='checkbox']{
     accent-color: grey;
 }
+td[contenteditable="true"]{
+    border: 1px dashed grey;
+}
 ::-webkit-scrollbar {
     width: 2px;
     background: transparent; /* Optional: just make scrollbar invisible */

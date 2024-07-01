@@ -74,14 +74,31 @@ function clickEditButton(evt){
   if (row){
     const cells = row.querySelectorAll("td");
     if (cells){
-      cells.forEach(cell => {;
-        const button = cell.firstElementChild;
+      //shows the delete checkboxes
+      //for loop as we only want the second cell to change to editable if that's an option
+      for (let i = 0; i < cells.length; i++){
+        const button = cells[i].firstElementChild;
         //make sure the edit button doesn't get hidden
         if (button != null && button.type == "checkbox"){
           //have to use getComputedStyle as CSS sets the first value
           button.style.display = (window.getComputedStyle(button, null).display === "none") ? "block" : "none";
         }
-      })
+        else if (i == 1){
+          //should be a value cell so can be edited
+          cells[i].contentEditable = cells[i].isContentEditable ? "false" : "true";
+          //urgh an attempted fix to stop it switching back to editable when it shouldn't be
+          if (cells[i].isContentEditable){
+            cells[i].focus();
+            //Below might not work in all browsers
+            try {
+            document.getSelection().modify("move", "forward", "documentboundary");
+            }catch (e) {
+              console.log(e);
+            }
+          }
+        }
+      }
+      //})
     }
   }
   

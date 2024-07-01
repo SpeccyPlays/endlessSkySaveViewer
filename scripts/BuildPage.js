@@ -102,6 +102,24 @@ function displayData(output) {
 
         if (/^-?\d+(\.\d+)?$/.test(arrayItem)) {
           cells[1].innerHTML = arrayItem
+          cells[1].setAttribute("contenteditable", "false");
+          cells[1].addEventListener("input", function(e) {
+            const inputValue = e.target.innerText;
+            if (!/^-?\d*$/.test(inputValue)) {
+              e.target.innerText = inputValue.slice(0, -1); // Remove last invalid character
+            }
+          })
+          cells[1].addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+              e.preventDefault(); // Prevent adding a newline
+              e.target.blur(); // Remove focus from the cell to stop editing
+              e.target.contentEditable = "false";//switch off editing 
+            }
+          });
+          cells[1].addEventListener("focusout", function(e){
+            //turn off editing if the cell is clicked out of
+            e.target.contentEditable = "false";//switch off editing 
+          });
         }
 
         // Loop through the status keywords to handle each case programmatically -
@@ -128,7 +146,7 @@ function displayData(output) {
       editButton.type = "button";
       editButton.className = "editbutton";
       //Only conditions can delete
-      const text = (keyDiv.name === "conditions") ? "Delete" : "Edit";
+      const text = (keyDiv.name === "conditions") ? "Select\nDeletions" : "Edit";
       editButton.innerHTML = text;
       editButton.value = text;
       editButton.onclick = (e) => clickEditButton(e);
